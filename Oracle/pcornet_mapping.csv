@@ -52,7 +52,7 @@ pcori_path,local_path
 \PCORI\DEMOGRAPHIC\RACE\07\,\i2b2\Demographics\Race\Declined\
 \PCORI\DEMOGRAPHIC\RACE\05\,\i2b2\Demographics\Race\White or Caucasian\
 \PCORI\DIAGNOSIS\DX_TYPE\09\,\i2b2\Diagnoses\
-\PCORI\PROCEDURE\PX_TYPE\C4\,\i2b2\Procedures\PRC\Metathesaurus CPT Hierarchical Terms\
+\PCORI\PROCEDURE\PX_TYPE\CH\,\i2b2\Procedures\PRC\Metathesaurus CPT Hierarchical Terms\
 \PCORI\PROCEDURE\PX_TYPE\09\,\i2b2\Procedures\PRC\ICD9 (Inpatient)\
 \PCORI\VITAL\HT\,\i2b2\Visit Details\Vitals\HEIGHT\
 \PCORI\VITAL\BP\DIASTOLIC\,\i2b2\Flowsheet\KU\GEN TMP CARD ECHO VITALS T:900426\KU GEN CARD GRP CV COMMON VITALS G:910000 I#2\BLOOD PRESSURE M:5 I#2\DIASTOLIC\
