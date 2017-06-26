@@ -13,6 +13,15 @@ from "&&i2b2_meta_schema".PCORNET_VITAL where sourcesystem_cd='MAPPING';
 delete 
 from "&&i2b2_meta_schema".PCORNET_ENC where sourcesystem_cd='MAPPING';
 
+delete
+from "&&i2b2_meta_schema".pcornet_enc where c_fullname in (
+  select c_fullname from pcornet_ontology_updates
+  where c_fullname like '\PCORI\ENCOUNTER\%'
+  );
+insert into "&&i2b2_meta_schema".pcornet_enc (
+  select * from pcornet_ontology_updates where c_fullname like '\PCORI\ENCOUNTER\%'
+  );
+
 insert into "&&i2b2_meta_schema".PCORNET_VITAL
 SELECT PCORNET_VITAL.C_HLEVEL+1,
   PCORNET_VITAL.C_FULLNAME || i2b2.c_basecode || '\' as  C_FULLNAME,
