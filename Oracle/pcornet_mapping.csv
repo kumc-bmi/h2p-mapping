@@ -12,8 +12,9 @@ pcori_path,local_path
 \PCORI_MOD\CONDITION_OR_DX\DX_SOURCE\AD\,\Diagnosis\\modifier_dx\billing_diagnosis\admit\
 "\PCORI_MOD\CONDITION_OR_DX\DX_SOURCE\UN\","\Diagnosis\Billing\UHC_DIAGNOSIS\"
 "\PCORI_MOD\CONDITION_OR_DX\DX_SOURCE\FI\","\Diagnosis\Billing\UKP\"
-"\PCORI_MOD\PDX\X\","\Diagnosis\Billing\Primary\"
 "\PCORI_MOD\CONDITION_OR_DX\DX_SOURCE\FI\","\Diagnosis\\modifier_dx\billing_diagnosis\professional\"
+\PCORI_MOD\CONDITION_OR_DX\DX_SOURCE\UN\,\Diagnosis\Clinical\PAT_ENC_DX\
+"\PCORI_MOD\PDX\X\","\Diagnosis\Billing\Primary\"
 "\PCORI_MOD\PDX\X\","\Diagnosis\\modifier_dx\billing_diagnosis\professional\professional_primary\"
 \PCORI_MOD\CONDITION_OR_DX\CONDITION_SOURCE\HC\,\Diagnosis\Clinical\HOSPITAL_PL_YN\
 \PCORI_MOD\CONDITION_OR_DX\CONDITION_SOURCE\HC\,\Diagnosis\Clinical\PAT_ENC_DX\
@@ -21,10 +22,12 @@ pcori_path,local_path
 \PCORI_MOD\CONDITION_OR_DX\CONDITION_SOURCE\HC\,\Diagnosis\STATUS_C\ACTIVE\
 \PCORI_MOD\CONDITION_OR_DX\CONDITION_SOURCE\PR\,\Diagnosis\Clinical\MEDICAL_HISTORY_DX\
 \PCORI_MOD\CONDITION_OR_DX\CONDITION_SOURCE\RG\,\Diagnosis\NTDS\
-\PCORI_MOD\DX_ORIGIN\OD\,\Diagnosis\Clinical\PRIMARY_DX_YN\
 \PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\Billing\UKP\
 \PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\Billing\UHC_DIAGNOSIS\
-\PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\Billing\Primary\
+\PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\\modifier_dx\billing_diagnosis\discharge\
+\PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\\modifier_dx\billing_diagnosis\admit\
+\PCORI_MOD\DX_ORIGIN\BI\,\Diagnosis\\modifier_dx\billing_diagnosis\professional\
+\PCORI_MOD\DX_ORIGIN\OD\,\Diagnosis\Clinical\PAT_ENC_DX\
 \PCORI\DEMOGRAPHIC\BIOBANK_FLAG\Y\,\i2b2\Specimens\
 \PCORI\DEMOGRAPHIC\HISPANIC\N\,"\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
 \PCORI\DEMOGRAPHIC\HISPANIC\NI\,\i2b2\Demographics\Ethnicity\Not Recorded\
