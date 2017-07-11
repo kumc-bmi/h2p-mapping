@@ -223,8 +223,7 @@ commit;
 -- TODO may be better represented in pcornet_mapping.csv
 create or replace view proc_local_to_pcori as
 select           '\PCORI\PROCEDURE\09\' as pcori_path, '\i2b2\Procedures\PRC\ICD9 (Inpatient)\' as local_path from dual 
-union all select '\PCORI\PROCEDURE\10\' as pcori_path, '\i2b2\Procedures\ICD10\' as local_path from dual 
-union all select '\PCORI\PROCEDURE\CH\' as pcori_path, '\i2b2\Procedures\PRC\Metathesaurus CPT Hierarchical Terms\' as local_path from dual
+union all select '\PCORI\PROCEDURE\10\' as pcori_path, '\i2b2\Procedures\ICD10\' as local_path from dual
 ;
 
 --select *
