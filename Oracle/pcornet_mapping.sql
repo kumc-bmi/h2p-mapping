@@ -269,7 +269,7 @@ from "&&i2b2_meta_schema".PCORNET_PROC p_proc
 where exists (select 1
               from proc_curated_to_pcori m
               where p_proc.c_fullname like m.pcori_path || '%')
-  and exists (select 1 from "&&curated_meta_schema"."&&curated_terms_table");
+  and exists (select 1 from "&&curated_meta_schema"."&&curated_proc_table");
 
 insert into "&&i2b2_meta_schema".PCORNET_PROC
 select 
@@ -281,7 +281,7 @@ select
   ht.c_tooltip, ht.m_applied_path, ht.update_date, ht.download_date, ht.import_date, 
   ht.sourcesystem_cd, ht.valuetype_cd, ht.m_exclusion_cd, ht.c_path, ht.c_symbol,
   ht.c_basecode pcori_basecode
-from  "&&curated_meta_schema"."&&curated_terms_table" ht
+from  "&&curated_meta_schema"."&&curated_proc_table" ht
 join proc_curated_to_pcori m on ht.c_fullname like m.curated_path || '%'
 order by ht.c_hlevel;
 

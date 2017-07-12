@@ -21,7 +21,7 @@ define i2b2_meta_schema=${i2b2_meta_schema}
 define terms_table=${terms_table}
 define i2b2_etl_schema=${i2b2_etl_schema}
 define curated_meta_schema=${curated_meta_schema}
-define curated_terms_table=${curated_terms_table}
+define curated_proc_table=${curated_proc_table}
 
 -- Local terminology mapping
 start pcornet_mapping.sql
