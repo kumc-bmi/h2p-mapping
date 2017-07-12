@@ -223,7 +223,8 @@ commit;
 -- TODO may be better represented in pcornet_mapping.csv
 create or replace view proc_local_to_pcori as
 select           '\PCORI\PROCEDURE\09\' as pcori_path, '\i2b2\Procedures\PRC\ICD9 (Inpatient)\' as local_path from dual 
-union all select '\PCORI\PROCEDURE\10\' as pcori_path, '\i2b2\Procedures\ICD10\' as local_path from dual
+union all select '\PCORI\PROCEDURE\10\' as pcori_path, '\i2b2\Procedures\ICD10\' as local_path from dual 
+union all select '\PCORI\PROCEDURE\CH\' as pcori_path, '\i2b2\Procedures\PRC\Metathesaurus CPT Hierarchical Terms\' as local_path from dual
 ;
 
 --select *
@@ -246,6 +247,46 @@ select
 from  "&&i2b2_meta_schema"."&&terms_table" ht
 join proc_local_to_pcori m on ht.c_fullname like m.local_path || '%'
 order by ht.c_hlevel;
+
+/* The following code is a temporary solution for HERON CPT Hierarchy being 
+ * wildly out of date.
+ * The idea is to use an up-to-date curated CPT hierarchy iff one is provided
+ * otherwise do nothing (error out in a fault tolerant way).
+ *
+ * The following temporary solution can be removed in it's entirety when
+ * the HERON CPT Hierarchy is properly updated.
+ * //TEMP SOLUTION BEGINNING//
+ */
+create or replace view proc_curated_to_pcori as
+select '\PCORI\PROCEDURE\CH\' as pcori_path, '\PCORI\PROCEDURE\C4\' as curated_path from dual
+;
+
+whenever sqlerror continue;
+
+--select *
+delete
+from "&&i2b2_meta_schema".PCORNET_PROC p_proc
+where exists (select 1
+              from proc_curated_to_pcori m
+              where p_proc.c_fullname like m.pcori_path || '%')
+  and exists (select 1 from "&&curated_meta_schema"."&&curated_terms_table");
+
+insert into "&&i2b2_meta_schema".PCORNET_PROC
+select 
+  ht.c_hlevel, 
+  replace(ht.c_fullname, m.curated_path, m.pcori_path) c_fullname, 
+  ht.c_name, ht.c_synonym_cd, ht.c_visualattributes,
+  ht.c_totalnum, ht.c_basecode, ht.c_metadataxml, ht.c_facttablecolumn, ht.c_tablename, 
+  ht.c_columnname, ht.c_columndatatype, ht.c_operator, ht.c_dimcode, ht.c_comment, 
+  ht.c_tooltip, ht.m_applied_path, ht.update_date, ht.download_date, ht.import_date, 
+  ht.sourcesystem_cd, ht.valuetype_cd, ht.m_exclusion_cd, ht.c_path, ht.c_symbol,
+  ht.c_basecode pcori_basecode
+from  "&&curated_meta_schema"."&&curated_terms_table" ht
+join proc_curated_to_pcori m on ht.c_fullname like m.curated_path || '%'
+order by ht.c_hlevel;
+
+whenever sqlerror exit;
+/* //TEMP SOLUTION ENDING// */
 
 /* MS-DRGs
 */

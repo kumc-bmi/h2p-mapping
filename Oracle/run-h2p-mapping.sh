@@ -20,6 +20,8 @@ set pagesize 5000;
 define i2b2_meta_schema=${i2b2_meta_schema}
 define terms_table=${terms_table}
 define i2b2_etl_schema=${i2b2_etl_schema}
+define curated_meta_schema=${curated_meta_schema}
+define curated_terms_table=${curated_terms_table}
 
 -- Local terminology mapping
 start pcornet_mapping.sql
