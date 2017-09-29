@@ -701,7 +701,11 @@ where lc.c_basecode like 'LOINC:%'
 
 /* Insert child KUH|COMPONENT_ID nodes, setting pcori_basecode, and c_path to
    that of it's parent. */
-insert into "&&i2b2_meta_schema".pcornet_lab
+whenever sqlerror continue;
+  drop table pcornet_lab_loinc;
+whenever sqlerror exit;
+
+create table pcornet_lab_loinc as 
 with parent_loinc_codes as ( -- LOINC codes with children LOINC codes
   select p_loinc.*
   from "&&i2b2_meta_schema"."&&terms_table" p_loinc
@@ -717,8 +721,12 @@ with parent_loinc_codes as ( -- LOINC codes with children LOINC codes
   where clc.c_basecode like 'LOINC:%'
     and clc.c_basecode not in (
       select c_basecode from parent_loinc_codes
-  )
+    )
 )
+select * from children_loinc_codes;
+
+
+insert into "&&i2b2_meta_schema".pcornet_lab
 select distinct
   ccc.C_HLEVEL,
   replace(ccc.C_FULLNAME, '\i2b2\Laboratory Tests\', '\PCORI\LAB_RESULT_CM\') c_fullname,
@@ -747,7 +755,7 @@ select distinct
   ccc.C_SYMBOL,
   llm.pcori_specimen_source,
   replace(clc.c_basecode, 'LOINC:', '') pcori_basecode
-from children_loinc_codes clc
+from pcornet_lab_loinc clc
 join "&&i2b2_meta_schema"."&&terms_table" ccc
   on ccc.c_fullname like (clc.c_fullname || '%')
   and ccc.c_basecode like 'KUH|COMPONENT_ID:%' -- TODO: Generalize for other sites.
