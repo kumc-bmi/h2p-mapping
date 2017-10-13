@@ -765,3 +765,83 @@ left outer join lab_loinc_mapping llm
 
 commit;
 
+/* TEMPORARY INR FIX - START 
+The SQL below makes sure that KUH|COMPONENT_ID:3090 is mapped to LAB_NAME:INR in
+PCORNET_LAB.  Ideally this would be fixed in HERON with this fix removed.
+
+See ticket #4327 for additional details and history.
+*/
+
+insert into "&&i2b2_meta_schema".PCORNET_LAB (
+C_HLEVEL,
+C_FULLNAME,
+C_NAME,
+C_SYNONYM_CD,
+C_VISUALATTRIBUTES,
+C_TOTALNUM,
+C_BASECODE,
+C_METADATAXML,
+C_FACTTABLECOLUMN,
+C_TABLENAME,
+C_COLUMNNAME,
+C_COLUMNDATATYPE,
+C_OPERATOR,
+C_DIMCODE,
+C_COMMENT,
+C_TOOLTIP,
+M_APPLIED_PATH,
+UPDATE_DATE,
+DOWNLOAD_DATE,
+IMPORT_DATE,
+SOURCESYSTEM_CD,
+VALUETYPE_CD,
+M_EXCLUSION_CD,
+C_PATH,
+C_SYMBOL,
+PCORI_SPECIMEN_SOURCE,
+PCORI_BASECODE
+)
+with loinc_3092 as (
+  select *
+  from "&&i2b2_meta_schema".pcornet_lab
+  where c_basecode like 'KUH|COMPONENT_ID:3092'
+)
+, lab_3090 as (
+  select *
+  from "&&i2b2_meta_schema"."&&terms_table"
+  where c_basecode like 'KUH|COMPONENT_ID:3090'
+)
+select
+  lo92.c_hlevel,
+  regexp_substr(lo92.c_fullname, '(.*\\).*\\$', 1,1,NULL,1) || regexp_substr(la90.c_fullname, '.*\\(.*\\)$', 1,1,NULL,1) c_fullname,
+  la90.c_name,
+  la90.c_synonym_cd,
+  la90.c_visualattributes,
+  la90.c_totalnum,
+  la90.c_basecode,
+  la90.c_metadataxml,
+  la90.c_facttablecolumn,
+  la90.c_tablename,
+  la90.c_columnname,
+  la90.c_columndatatype,
+  la90.c_operator,
+  regexp_substr(lo92.c_dimcode, '(.*\\).*\\$', 1,1,NULL,1) || regexp_substr(la90.c_dimcode, '.*\\(.*\\)$', 1,1,NULL,1) c_dimcode,
+  la90.c_comment,
+  lo92.c_tooltip,
+  la90.m_applied_path,
+  la90.update_date,
+  null download_date,
+  la90.import_date,
+  la90.sourcesystem_cd,
+  null valuetype_cd,
+  null m_exclusion_cd,
+  lo92.c_path,
+  null c_symbol,
+  lo92.pcori_specimen_source,
+  lo92.pcori_basecode
+from lab_3090 la90
+cross join loinc_3092 lo92
+;
+
+commit;
+/* TEMPORARY INR FIX - END */
