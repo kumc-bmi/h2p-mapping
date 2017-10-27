@@ -13,7 +13,7 @@ sqlplus $USERNAME/$PASSWORD@$SID << EOF
 -- Drop old shrine NAACCR_ONTOLOGY and built fresh shrine NAACCR_ONTOLOGY
 -- But Not going to build new shrine (shrin_ont.shrine) ontolgies everytime, 
 -- it will be used as it is from Harvard.
-drop $SHRINE_ONT_SCHEMA.NAACCR_ONTOLOGY;
+drop table $SHRINE_ONT_SCHEMA.NAACCR_ONTOLOGY;
 create table $SHRINE_ONT_SCHEMA.NAACCR_ONTOLOGY
   as (
     select * from BLUEHERONMETADATA.NAACCR_ONTOLOGY
