@@ -27,7 +27,7 @@
 "\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 65 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\>= 65 years old\"
 "\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 85 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\>= 85 years old\"
 "\\SHRINE\SHRINE\DEMOGRAPHIC\BIRTH_DATE\","\\i2b2_Demographics\i2b2\Demographics\Date\Birth\"
-"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\N\ Non-Hispanic,"\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\N\ Non-Hispanic","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
 "\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\UN\","\\i2b2_Demographics\i2b2\Demographics\Race\Not Recorded\Not Recorded-UNK\"
 "\\SHRINE\SHRINE\DEMOGRAPHIC\RAW_HISPANIC\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic\"
 "\\SHRINE\SHRINE\DEMOGRAPHIC\BIOBANK_FLAG\Y\","\\i2b2_Demographics\i2b2\Specimens\"
