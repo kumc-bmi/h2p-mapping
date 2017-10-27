@@ -28,7 +28,7 @@ SET trimspool on
 set term off
 set feed off
 SPOOL AdapterMappings.csv
-select '"'|| SCIHLS_PATH || '", "'|| HERON_PATH || '"' from  $SHRINE_ONT_SCHEMA.TEMP_SHRINE_MAPPING;
+select '"'|| SCIHLS_PATH || '", "'|| HERON_PATH || '"' from  SHRINE_ONT.TEMP_SHRINE_MAPPING;
 SPOOL off
 
 set termout on
