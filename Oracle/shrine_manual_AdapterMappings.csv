@@ -1,36 +1,36 @@
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\NI\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Not Recorded\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\OT\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Other\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic or Latino\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\,"\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic, Latino or Spanish Origin\"
-\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\F\,\\i2b2_Demographics\i2b2\Demographics\Gender\Female\
-\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\M\,\\i2b2_Demographics\i2b2\Demographics\Gender\Male\
-\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\NI\,\\i2b2_Demographics\i2b2\Demographics\Gender\Unknown\Unknown-@\
-\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\UN\,\\i2b2_Demographics\i2b2\Demographics\Gender\Unknown\Unknown-U\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\01\,\\i2b2_Demographics\i2b2\Demographics\Race\American Indian or Alaskan Native\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\02\,\\i2b2_Demographics\i2b2\Demographics\Race\Asian\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\03\,\\i2b2_Demographics\i2b2\Demographics\Race\Black or African American\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\06\,\\i2b2_Demographics\i2b2\Demographics\Race\Two Races\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\04\,\\i2b2_Demographics\i2b2\Demographics\Race\Native Hawaiian or Other Pacific Islander\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\NI\,\\i2b2_Demographics\i2b2\Demographics\Race\Not Recorded\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\OT\,\\i2b2_Demographics\i2b2\Demographics\Race\Other\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\07\,\\i2b2_Demographics\i2b2\Demographics\Race\Declined\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\05\,\\i2b2_Demographics\i2b2\Demographics\Race\White or Caucasian\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\0-9 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\0-9 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\10-17 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\10-17 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\18-34 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\18-34 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\35-44 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\35-44 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\45-54 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\45-54 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\55-64 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\55-64 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\65-74 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\65-74 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\75-84 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\75-84 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 65 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\>= 65 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 85 years old\,\\i2b2_Demographics\i2b2\Demographics\Age\>= 85 years old\
-\\SHRINE\SHRINE\DEMOGRAPHIC\BIRTH_DATE\,\\i2b2_Demographics\i2b2\Demographics\Date\Birth\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\N\ Non-Hispanic,"\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
-\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\UN\,\\i2b2_Demographics\i2b2\Demographics\Race\Not Recorded\Not Recorded-UNK\
-\\SHRINE\SHRINE\DEMOGRAPHIC\RAW_HISPANIC\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic\
-\\SHRINE\SHRINE\DEMOGRAPHIC\BIOBANK_FLAG\Y\,\\i2b2_Demographics\i2b2\Specimens\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\R\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Declined\
-\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\UN\,\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Not Recorded\
-\\SHRINE\SHRINE\DIAGNOSIS\09\,\\i2b2_Diagnoses\i2b2\Diagnoses\ICD9\
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\NI\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Not Recorded\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\OT\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Other\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic or Latino\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\Y\,"\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic, Latino or Spanish Origin\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\F\","\\i2b2_Demographics\i2b2\Demographics\Gender\Female\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\M\","\\i2b2_Demographics\i2b2\Demographics\Gender\Male\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\NI\","\\i2b2_Demographics\i2b2\Demographics\Gender\Unknown\Unknown-@\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\SEX\UN\","\\i2b2_Demographics\i2b2\Demographics\Gender\Unknown\Unknown-U\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\01\","\\i2b2_Demographics\i2b2\Demographics\Race\American Indian or Alaskan Native\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\02\","\\i2b2_Demographics\i2b2\Demographics\Race\Asian\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\03\","\\i2b2_Demographics\i2b2\Demographics\Race\Black or African American\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\06\","\\i2b2_Demographics\i2b2\Demographics\Race\Two Races\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\04\","\\i2b2_Demographics\i2b2\Demographics\Race\Native Hawaiian or Other Pacific Islander\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\NI\","\\i2b2_Demographics\i2b2\Demographics\Race\Not Recorded\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\OT\","\\i2b2_Demographics\i2b2\Demographics\Race\Other\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\07\","\\i2b2_Demographics\i2b2\Demographics\Race\Declined\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\05\","\\i2b2_Demographics\i2b2\Demographics\Race\White or Caucasian\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\0-9 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\0-9 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\10-17 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\10-17 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\18-34 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\18-34 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\35-44 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\35-44 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\45-54 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\45-54 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\55-64 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\55-64 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\65-74 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\65-74 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\75-84 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\75-84 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 65 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\>= 65 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\Age\>= 85 years old\","\\i2b2_Demographics\i2b2\Demographics\Age\>= 85 years old\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\BIRTH_DATE\","\\i2b2_Demographics\i2b2\Demographics\Date\Birth\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\N\ Non-Hispanic,"\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RACE\UN\","\\i2b2_Demographics\i2b2\Demographics\Race\Not Recorded\Not Recorded-UNK\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\RAW_HISPANIC\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Hispanic\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\BIOBANK_FLAG\Y\","\\i2b2_Demographics\i2b2\Specimens\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\R\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Declined\"
+"\\SHRINE\SHRINE\DEMOGRAPHIC\HISPANIC\UN\","\\i2b2_Demographics\i2b2\Demographics\Ethnicity\Not Recorded\"
+"\\SHRINE\SHRINE\DIAGNOSIS\09\","\\i2b2_Diagnoses\i2b2\Diagnoses\ICD9\"
