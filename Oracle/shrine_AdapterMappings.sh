@@ -79,7 +79,7 @@ EOF
 # exporting shrine ont mapping as CSV and then comnine with manual mapping
 ##########################################################################
 
-sqlplus -S $USERNAME/$PASSWORD@$SID << EOF
+sqlplus -S $USERNAME/$PASSWORD@$SID << EOF | grep -E "^ORA-|^ERROR"
 select systimestamp from dual;
 
 set termout off
