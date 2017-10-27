@@ -32,11 +32,9 @@ CREATE TABLE $SHRINE_ONT_SCHEMA.temp_shrine_mapping
         join blueheronmetadata.heron_terms ht
           on so.c_basecode=ht.c_basecode
           and so.c_basecode like 'ICD9:%' 
-          and ht.C_FULLNAME like '\i2b2\Diagnoses\%'
-          
+          and ht.C_FULLNAME like '\i2b2\Diagnoses\%' 
         union ALL
-        
-         -- diagnosis icd10
+        -- diagnosis icd10
         select '\\SHRINE'|| so.c_fullname scihls_path,
                '\\i2b2_Diagnoses' || ht.c_fullname heron_path 
         from $SHRINE_ONT_SCHEMA.shrine so
@@ -44,9 +42,7 @@ CREATE TABLE $SHRINE_ONT_SCHEMA.temp_shrine_mapping
           on so.c_basecode=ht.c_basecode
           and so.c_basecode like 'ICD10:%' 
           and ht.C_FULLNAME like '\i2b2\Diagnoses\%'
-        
         union ALL
-        
         -- demographics 
         select '\\SHRINE'|| so.c_fullname scihls_path,
                '\\i2b2_Demographics' || ht.c_fullname heron_path 
@@ -55,9 +51,7 @@ CREATE TABLE $SHRINE_ONT_SCHEMA.temp_shrine_mapping
           on so.c_basecode=ht.c_basecode
           and so.c_basecode like 'DEM%' 
           and ht.C_FULLNAME like '\i2b2\Demographics\%'
-
         union ALL
-
         -- NAACCR (tumor registry)
         select '\\SHRINE_NAACCR' || c_fullname as scihls_path,
                '\\i2b2_naaccr' ||  c_fullname as heron_path
