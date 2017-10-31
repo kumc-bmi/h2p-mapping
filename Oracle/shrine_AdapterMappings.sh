@@ -1,4 +1,6 @@
 #!/bin/sh
+set -x
+set -e
 SID=$1
 USERNAME=$2
 PASSWORD=$3
