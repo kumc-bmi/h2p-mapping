@@ -1,3 +1,8 @@
+# Authors: Lav Patel
+# Contact: http://informatics.kumc.edu/
+# Copyright: Copyright (c) 2017 Univeristy of Kansas Medical Center
+# License: MIT
+
 #!/bin/sh
 set -x
 set -e

@@ -1,3 +1,10 @@
+/*
+Authors: Lav Patel
+Contact: http://informatics.kumc.edu/
+Copyright: Copyright (c) 2017 Univeristy of Kansas Medical Center
+License: MIT
+*/
+
 -- Drop old shrine NAACCR_ONTOLOGY and built fresh shrine NAACCR_ONTOLOGY
 -- But Not going to build new shrine (shrin_ont.shrine) ontolgies everytime, 
 -- it will be used as it is from Harvard.
