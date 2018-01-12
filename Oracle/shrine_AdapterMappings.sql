@@ -44,7 +44,21 @@ CREATE TABLE SHRINE_ONT.temp_shrine_mapping
         select '\\SHRINE_NAACCR' || c_fullname as scihls_path,
                '\\i2b2_naaccr' ||  c_fullname as heron_path
         from SHRINE_ONT.NAACCR_ONTOLOGY
-    );
+        union ALL
+        -- Procedure (CPT, ICD9, ICD10)
+        select '\\SHRINE'|| so.c_fullname scihls_path
+              ,'\\PCORI_PROCEDURE' || ht.c_fullname heron_path
+        from SHRINE_ONT.shrine so
+        join blueheronmetadata.heron_terms ht
+          on replace(so.c_basecode,'ICD10PCS','ICD10') = ht.c_basecode
+        where
+          (
+          so.c_basecode like 'CPT:%'
+          or so.c_basecode like 'ICD9:%'
+          or so.c_basecode like 'ICD10PCS:%'
+          )
+          and ht.C_FULLNAME like '\PCORI\PROCEDURE\%'
+      );
 
 
 /*
