@@ -79,3 +79,48 @@ update SHRINE_ONT.shrine
                 from temp_shrine_mapping
               );
 */
+
+
+/*
+Test Cases
+*/
+
+
+-- Test Case-1 : Check distinct counts of proedure's c_basecode in heron_terms
+select basecodes_string,
+      case
+        when basecodes_string = ':0; CPT:13549; ICD10:178189; ICD9:4664; PROCEDURE:2'
+           THEN 1
+        else 1/0
+      END as pass_fail
+from (
+  select listagg(basecode, '; ') within group (order by basecode) basecodes_string
+  from (
+    select
+       REGEXP_SUBSTR(ht.c_basecode,'[^:]+',1,1) || ':' ||count(distinct(ht.c_basecode)) basecode
+    from blueheronmetadata.heron_terms ht
+    where ht.C_FULLNAME like '\PCORI\PROCEDURE\%'
+    group by REGEXP_SUBSTR(ht.c_basecode,'[^:]+',1,1)
+    order by basecode
+        ) basecode_count
+     )heron_terems_basecode;
+
+
+--Test Case-2: Check distinct count of proedure's c_basecode in shrine_terms
+select basecodes_string,
+      case
+        when basecodes_string = ':0; CPT:13549; HCPCS:6778; ICD10PCS:178189; ICD9:4664; PROCEDURE:2'
+           THEN 1
+        else 1/0
+      END as pass_fail
+from (
+  select listagg(basecode, '; ') within group (order by basecode) basecodes_string
+    from (
+      select 
+        REGEXP_SUBSTR(so.c_basecode,'[^:]+',1,1) || ':' || count(distinct(so.C_BASECODE)) basecode
+      from SHRINE_ONT.shrine so
+      where so.C_FULLNAME like '\SHRINE\PROCEDURE\%'
+      group by REGEXP_SUBSTR(so.c_basecode,'[^:]+',1,1)
+      order by basecode
+          ) basecode_count
+      ) shrine_terms_basecode;
