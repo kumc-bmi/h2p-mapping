@@ -500,7 +500,7 @@ with pcornet_spec as (
 )
 , all_med as (
   select cd. concept_cd, max(name_char) name_char
-  from blueherondata.concept_dimension cd
+  from 	"&&i2b2_data_schema".concept_dimension cd
   where cd.concept_cd like 'KUH|MEDICATION_ID:%'
   group by cd.concept_cd
 )
