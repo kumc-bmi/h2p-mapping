@@ -15,7 +15,7 @@ as
 select *
 from shrine_ont_act.ACT_DEMO_MANUAL_MAPPING
 union all
-select '\\\\ACT_DEMO' || sh.c_fullname, '\\\\i2b2_Demographics' || he.c_fullname
+select '\\ACT_DEMO' || sh.c_fullname, '\\i2b2_Demographics' || he.c_fullname
 from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS sh
 join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
@@ -24,8 +24,8 @@ union all
 ---------------- DX ICD 10-9 (NCATS_ICD10_ICD9_DX_V1)
 --------------------------------------------------------------------------
 select 
-'\\\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+'\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.NCATS_ICD10_ICD9_DX_V1 sh
 join BLUEHERONMETADATA.heron_terms he
   on replace(sh.c_basecode,'ICD9CM:','ICD9:') = he.c_basecode
@@ -33,8 +33,8 @@ where he.c_fullname like '\i2b2\Diagnoses\ICD9%'
 --25239/16291 out of 25,393/16,438
 union all
 select 
-'\\\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+'\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.NCATS_ICD10_ICD9_DX_V1 sh
 join BLUEHERONMETADATA.heron_terms he
   on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
@@ -44,8 +44,8 @@ union all
 ---------------- DX ICD9 (ACT_ICD9CM_DX_2018AA)
 --------------------------------------------------------------------------
 select 
-'\\\\ACT_DX_ICD9_2018' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+'\\ACT_DX_ICD9_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD9CM_DX_2018AA sh
 inner join BLUEHERONMETADATA.HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD9CM', 'ICD9') = he.c_basecode
@@ -54,8 +54,8 @@ inner join BLUEHERONMETADATA.HERON_TERMS he
   --17736
 union all
 select
-'\\\\ACT_DX_ICD9_2018' || not_default_icd9.C_FULLNAME shrine_term,
-'\\\\i2b2_Diagnoses'||ht.C_FULLNAME heron_term
+'\\ACT_DX_ICD9_2018' || not_default_icd9.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||ht.C_FULLNAME heron_term
 from
 (
   select * 
@@ -84,8 +84,8 @@ union all
 --------------------------------------------------------------------------
 -- join based on ICD10
 select /*+ parallel */
-'\\\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+'\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
 join BLUEHERONMETADATA.heron_terms he
   on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
@@ -93,8 +93,8 @@ join BLUEHERONMETADATA.heron_terms he
 union all
 -- which are not joined based on ICD10 will be mapped less than 10
 select /*+ parallel */ 
-'\\\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Demographics' || '\LESS_THAN_10'
+'\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\LESS_THAN_10'
 from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
 where c_basecode NOT in
   (
@@ -108,8 +108,8 @@ union all
 ---------------- Procedure ICD9 (ACT_ICD9CM_PX_2018AA)
 --------------------------------------------------------------------------
 select
-'\\\\ACT_PX_ICD9_2018' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Procedures'||he.C_FULLNAME heron_term
+'\\ACT_PX_ICD9_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Procedures'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD9CM_PX_2018AA sh
 inner join BLUEHERONMETADATA.HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD9PROC', 'ICD9') = he.c_basecode
@@ -117,8 +117,8 @@ inner join BLUEHERONMETADATA.HERON_TERMS he
   -- 4323
 union all
 select
-'\\\\ACT_PX_ICD9_2018' || not_default_proc.C_FULLNAME shrine_term,
-'\\\\i2b2_Procedures'||ht.C_FULLNAME heron_term
+'\\ACT_PX_ICD9_2018' || not_default_proc.C_FULLNAME shrine_term,
+'\\i2b2_Procedures'||ht.C_FULLNAME heron_term
 from 
   (
   select 
@@ -145,8 +145,8 @@ union all
 ---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
 select  
-'\\\\ACT_LAB' || sh.C_FULLNAME shrine_term,
-'\\\\i2b2_Laboratory Tests'||he.C_FULLNAME heron_term
+'\\ACT_LAB' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Laboratory Tests'||he.C_FULLNAME heron_term
 from shrine_ont_act.ncats_labs sh
 join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
