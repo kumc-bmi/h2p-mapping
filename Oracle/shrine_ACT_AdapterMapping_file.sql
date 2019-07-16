@@ -80,7 +80,7 @@ left join BLUEHERONMETADATA.HERON_TERMS ht
 --DX ICD9 17,862 out of 17866
 union all
 --------------------------------------------------------------------------
----------------- ACT Diagnoses ICD-10	(ACT_DX_ICD10_2018,	ACT_ICD10CM_DX_2018AA)
+---------------- ACT Diagnoses ICD-10	(ACT_ICD10CM_DX_2018AA)
 --------------------------------------------------------------------------
 -- join based on ICD10
 select /*+ parallel */
