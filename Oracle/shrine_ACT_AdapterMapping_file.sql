@@ -10,7 +10,7 @@ parallel 15
 NOLOGGING 
 as
 --------------------------------------------------------------------------
----------------- Demographics
+---------------- Demographics (NCATS_DEMOGRAPHICS and ACT_DEMO_MANUAL_MAPPING)
 -------------------------------------------------------------------------- 
 select *
 from shrine_ont_act.ACT_DEMO_MANUAL_MAPPING
@@ -21,7 +21,7 @@ join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 union all
 --------------------------------------------------------------------------
----------------- DX ICD 10-9
+---------------- DX ICD 10-9 (NCATS_ICD10_ICD9_DX_V1)
 --------------------------------------------------------------------------
 select 
 '\\\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
@@ -41,7 +41,7 @@ join BLUEHERONMETADATA.heron_terms he
 --102,531/91,310 out off --102,757/91,586
 union all
 --------------------------------------------------------------------------
----------------- DX ICD9
+---------------- DX ICD9 (ACT_ICD9CM_DX_2018AA)
 --------------------------------------------------------------------------
 select 
 '\\\\ACT_DX_ICD9_2018' || sh.C_FULLNAME shrine_term,
@@ -80,7 +80,32 @@ left join BLUEHERONMETADATA.HERON_TERMS ht
 --DX ICD9 17,862 out of 17866
 union all
 --------------------------------------------------------------------------
----------------- Procedure ICD9
+---------------- ACT Diagnoses ICD-10	(ACT_DX_ICD10_2018,	ACT_ICD10CM_DX_2018AA)
+--------------------------------------------------------------------------
+-- join based on ICD10
+select /*+ parallel */
+'\\\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
+join BLUEHERONMETADATA.heron_terms he
+  on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+--91830 out of 94505
+union all
+-- which are not joined based on ICD10 will be mapped less than 10
+select /*+ parallel */ 
+'\\\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\\\i2b2_Demographics' || '\LESS_THAN_10'
+from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
+where c_basecode NOT in
+  (
+  select /*+ parallel */ sh.c_basecode
+  from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
+  join BLUEHERONMETADATA.heron_terms he
+    on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+  )
+union all
+--------------------------------------------------------------------------
+---------------- Procedure ICD9 (ACT_ICD9CM_PX_2018AA)
 --------------------------------------------------------------------------
 select
 '\\\\ACT_PX_ICD9_2018' || sh.C_FULLNAME shrine_term,
@@ -117,7 +142,7 @@ join BLUEHERONMETADATA.HERON_TERMS ht
 -- union all 4664 out of 4666
 union all
 --------------------------------------------------------------------------
----------------- LABS
+---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
 select  
 '\\\\ACT_LAB' || sh.C_FULLNAME shrine_term,
