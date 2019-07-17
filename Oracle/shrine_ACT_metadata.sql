@@ -27,10 +27,10 @@ commit;
 -------------------------------------------------------------------------------
 DELETE from 
 "BLUEHERONMETADATA"."HERON_TERMS"
-where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10';
+where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\';
 
 -- TERM_ID need to be max+1 eg. select max(term_id)+1 from BLUEHERONMETADATA.HERON_TERMS;
-INSERT INTO "BLUEHERONMETADATA"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_BASECODE, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, TERM_ID) VALUES ('4', '\i2b2\Demographics\LESS_THAN_10', 'LESS THAN 10', 'N', 'LH ', 'LESS_THAN_10', 'concept_cd', 'concept_dimension', 'concept_path', 'T', 'LIKE', '\i2b2\Demographics\LESS_THAN_10', '@', TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), 'ACT SHRINE MANUAL', '7448115');
+INSERT INTO "BLUEHERONMETADATA"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_BASECODE, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, TERM_ID) VALUES ('4', '\i2b2\Demographics\LESS_THAN_10\', 'LESS THAN 10', 'N', 'LH ', 'LESS_THAN_10', 'concept_cd', 'concept_dimension', 'concept_path', 'T', 'LIKE', '\i2b2\Demographics\LESS_THAN_10\', '@', TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), 'ACT SHRINE MANUAL', '7448115');
 
 
 -------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ INSERT INTO "BLUEHERONMETADATA"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_S
 -------------------------------------------------------------------------------
 DELETE FROM
 BlueHeronData.concept_dimension
-where concept_path = '\i2b2\Demographics\LESS_THAN_10';
+where concept_path = '\i2b2\Demographics\LESS_THAN_10\';
 
 insert into BlueHeronData.concept_dimension(
   concept_cd, 
@@ -70,7 +70,7 @@ from
 (
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 from BLUEHERONMETADATA.HERON_TERMS
-where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10'
+where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\'
 ) ib
 where ib.c_basecode is not null
 group by ib.c_basecode, ib.c_fullname
