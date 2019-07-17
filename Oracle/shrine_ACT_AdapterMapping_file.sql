@@ -246,24 +246,3 @@ join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 --289 out of 288
 ;
-
-
-
-select count(*), count (distinct c_basecode)
-from shrine_ont_act.ACT_HCPCS_PX_2018AA;
-select NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode), count(*)
-from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA
-group by NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode)
-;
-/*
-	1
-HCPCS	7120
-*/
-
-select 
-c_basecode, c_name
---distinct(NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode))
-from BLUEHERONMETADATA.HERON_TERMS he
-where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
-and he.c_basecode like 'HCPCS%'
-;
