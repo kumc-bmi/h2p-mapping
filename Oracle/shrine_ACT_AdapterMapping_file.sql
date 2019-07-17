@@ -95,7 +95,7 @@ union all
 -- which are not joined based on ICD10 will be mapped less than 10
 select /*+ parallel */ 
 '\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10' heron_term
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10' heron_term
 from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
 where c_basecode NOT in
   (
@@ -161,7 +161,7 @@ union all
 -- which are not joined based on ICD10 will be mapped less than 10
 select /*+ parallel */ 
 '\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10' heron_term
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10' heron_term
 from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
 where c_basecode not in
 (
@@ -192,7 +192,7 @@ inner join BLUEHERONMETADATA.HERON_TERMS he
 union all
 select /*+ parallel */ 
 '\\ACT_PX_CPT_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10'heron_term
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10'heron_term
 from shrine_ont_act.ACT_CPT_PX_2018AA sh
 where c_basecode not in
   (
@@ -222,7 +222,7 @@ inner join BLUEHERONMETADATA.HERON_TERMS he
 union all
 select /*+ parallel */ 
 '\\ACT_PX_HCPCS_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10'heron_term
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10' heron_term
 from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
 where c_basecode not in
 (
