@@ -1,3 +1,6 @@
+-------------------------------------------------------------------------------
+-- TABLE_ACCESS
+-------------------------------------------------------------------------------
 DELETE from 
 "BLUEHERONMETADATA"."TABLE_ACCESS"
 where c_name like 'ACT%';
@@ -18,6 +21,10 @@ INSERT INTO "BLUEHERONMETADATA"."TABLE_ACCESS" (C_TABLE_CD, C_TABLE_NAME, C_PROT
 
 commit;
 
+
+-------------------------------------------------------------------------------
+-- LESS_THAN_10 HERON_TERMS
+-------------------------------------------------------------------------------
 DELETE from 
 "BLUEHERONMETADATA"."HERON_TERMS"
 where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10';
@@ -25,4 +32,48 @@ where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10';
 -- TERM_ID need to be max+1 eg. select max(term_id)+1 from BLUEHERONMETADATA.HERON_TERMS;
 INSERT INTO "BLUEHERONMETADATA"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_BASECODE, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, TERM_ID) VALUES ('4', '\i2b2\Demographics\LESS_THAN_10', 'LESS THAN 10', 'N', 'LH ', 'LESS_THAN_10', 'concept_cd', 'concept_dimension', 'concept_path', 'T', 'LIKE', '\i2b2\Demographics\LESS_THAN_10', '@', TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2019-07-17 19:43:10', 'YYYY-MM-DD HH24:MI:SS'), 'ACT SHRINE MANUAL', '7448115');
 
+
+-------------------------------------------------------------------------------
+-- LESS_THAN_10 CONCEPT_DIMENSION
+-------------------------------------------------------------------------------
+DELETE FROM
+BlueHeronData.concept_dimension
+where concept_path = '\i2b2\Demographics\LESS_THAN_10';
+
+insert into BlueHeronData.concept_dimension(
+  concept_cd, 
+  concept_path, 
+  name_char,
+  update_date, 
+  download_date, 
+  import_date, 
+  sourcesystem_cd,
+  upload_id
+  )
+select distinct 
+  ib.c_basecode,
+  -- Previously, ib.c_fullname was selected instead of ib.c_dimcode.  
+  -- This was incorrect, because concept searches look for c_dimcode, 
+  -- but it wasn't a huge problem because c_fullname and c_dimcode were  
+  -- always identical. The SCILHS-based procedures ontology update (#26) 
+  -- introduced terms where that is not true, which shed light on the error 
+  -- and resulted in the change from ib.c_fullname to ib.c_dimcode.
+  -- HERE I am using c_fullname again as C_dimecode has date in it.
+  ib.c_fullname, 
+  max(ib.c_name), 
+  update_date, 
+  download_date, 
+  sysdate, 
+  'NCATS' sourcesystem_cd,
+  &&upload_id upload_id
+from 
+(
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.HERON_TERMS
+where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10'
+) ib
+where ib.c_basecode is not null
+group by ib.c_basecode, ib.c_fullname
+     , update_date, download_date, sysdate, sourcesystem_cd
+;
 commit;
