@@ -207,6 +207,35 @@ where c_basecode not in
   )
 union all
 --------------------------------------------------------------------------
+---------------- ACT Procedures HCPCS	
+---------------- table_cd: ACT_PX_HCPCS_2018
+---------------- table_name: ACT_HCPCS_PX_2018AA
+--------------------------------------------------------------------------
+select /*+ parallel */
+'\\ACT_PX_HCPCS_2018' || sh.C_FULLNAME shrine_term,
+'\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
+inner join BLUEHERONMETADATA.HERON_TERMS he
+  on replace(sh.C_BASECODE,'HCPCS', 'HCPCS') = he.c_basecode
+  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+  --5285/5285 out of 7121/7120
+union all
+select /*+ parallel */ 
+'\\ACT_PX_HCPCS_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\LESS_THAN_10'heron_term
+from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
+where c_basecode not in
+(
+select /*+ parallel */
+sh.c_basecode
+from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
+inner join BLUEHERONMETADATA.HERON_TERMS he
+  on replace(sh.C_BASECODE,'HCPCS', 'HCPCS') = he.c_basecode
+  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+  --5285/5285 out of 7121/7120
+)
+union all
+--------------------------------------------------------------------------
 ---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
 select  
@@ -216,4 +245,25 @@ from shrine_ont_act.ncats_labs sh
 join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 --289 out of 288
+;
+
+
+
+select count(*), count (distinct c_basecode)
+from shrine_ont_act.ACT_HCPCS_PX_2018AA;
+select NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode), count(*)
+from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA
+group by NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode)
+;
+/*
+	1
+HCPCS	7120
+*/
+
+select 
+c_basecode, c_name
+--distinct(NVL(SUBSTR(c_basecode, 0, INSTR(c_basecode, ':')-1), c_basecode))
+from BLUEHERONMETADATA.HERON_TERMS he
+where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+and he.c_basecode like 'HCPCS%'
 ;
