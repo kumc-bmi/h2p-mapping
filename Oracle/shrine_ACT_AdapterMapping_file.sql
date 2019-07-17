@@ -4,7 +4,8 @@ set echo on;
 --------------------------------------------------------------------------  
 whenever sqlerror continue;
 drop table temp_act_adapter_mapping;
-whenever sqlerror exit sql.sqlcode;
+whenever sqlerror exit sql.sqlcode
+;
 create table temp_act_adapter_mapping
 parallel 15
 NOLOGGING 
@@ -94,7 +95,7 @@ union all
 -- which are not joined based on ICD10 will be mapped less than 10
 select /*+ parallel */ 
 '\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10'
+'\\i2b2_Demographics' || '\LESS_THAN_10' heron_term
 from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
 where c_basecode NOT in
   (
@@ -149,7 +150,7 @@ union all
 -- join based on ICD10
 select /*+ parallel */
 '\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Procedures'||he.C_FULLNAME heron_term
+'\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
 inner join BLUEHERONMETADATA.HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD10PCS', 'ICD10') = he.c_basecode
@@ -160,7 +161,7 @@ union all
 -- which are not joined based on ICD10 will be mapped less than 10
 select /*+ parallel */ 
 '\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\LESS_THAN_10'
+'\\i2b2_Demographics' || '\LESS_THAN_10' heron_term
 from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
 where c_basecode not in
 (
@@ -173,6 +174,37 @@ inner join BLUEHERONMETADATA.HERON_TERMS he
   -- count/distinct
   -- 176544/176544 out of 190177/190176
 )
+union all
+--------------------------------------------------------------------------
+---------------- ACT Procedures CPT-4	
+---------------- table_cd: ACT_PX_CPT_2018
+---------------- table_name: ACT_CPT_PX_2018AA
+--------------------------------------------------------------------------
+select /*+ parallel */
+'\\ACT_PX_CPT_2018' || sh.C_FULLNAME shrine_term,
+'\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_CPT_PX_2018AA sh
+inner join BLUEHERONMETADATA.HERON_TERMS he
+  on replace(sh.C_BASECODE,'CPT4', 'CPT') = he.c_basecode
+  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+  -- count/distinct
+  --12750/12750 out of 13754/13754
+union all
+select /*+ parallel */ 
+'\\ACT_PX_CPT_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\LESS_THAN_10'heron_term
+from shrine_ont_act.ACT_CPT_PX_2018AA sh
+where c_basecode not in
+  (
+  select /*+ parallel */
+  sh.c_basecode
+  from shrine_ont_act.ACT_CPT_PX_2018AA sh
+  inner join BLUEHERONMETADATA.HERON_TERMS he
+    on replace(sh.C_BASECODE,'CPT4', 'CPT') = he.c_basecode
+    where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+     -- count/distinct
+     --12750/12750 out of 13754/13754
+  )
 union all
 --------------------------------------------------------------------------
 ---------------- LABS (ncats_labs)
