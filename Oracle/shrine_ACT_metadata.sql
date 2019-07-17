@@ -1,4 +1,3 @@
-define upload_id=${upload_id};
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
 -------------------------------------------------------------------------------
@@ -62,7 +61,7 @@ select distinct
   download_date, 
   sysdate, 
   'NCATS' sourcesystem_cd,
-  &&upload_id upload_id
+  '&1' upload_id
 from 
 (
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
