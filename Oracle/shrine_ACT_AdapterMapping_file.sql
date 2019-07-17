@@ -142,6 +142,39 @@ join BLUEHERONMETADATA.HERON_TERMS ht
 -- union all 4664 out of 4666
 union all
 --------------------------------------------------------------------------
+---------------- ACT Procedures ICD-10-PCS	
+---------------- table_cd: ACT_PX_ICD10_2018	
+---------------- table_name: ACT_ICD10PCS_PX_2018AA
+--------------------------------------------------------------------------
+-- join based on ICD10
+select /*+ parallel */
+'\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Procedures'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
+inner join BLUEHERONMETADATA.HERON_TERMS he
+  on replace(sh.C_BASECODE,'ICD10PCS', 'ICD10') = he.c_basecode
+  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+  -- count/distinct
+  -- 176544/176544 out of 190177/190176
+union all
+-- which are not joined based on ICD10 will be mapped less than 10
+select /*+ parallel */ 
+'\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\LESS_THAN_10'
+from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
+where c_basecode not in
+(
+select /*+ parallel */
+sh.c_basecode
+from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
+inner join BLUEHERONMETADATA.HERON_TERMS he
+  on replace(sh.C_BASECODE,'ICD10PCS', 'ICD10') = he.c_basecode
+  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
+  -- count/distinct
+  -- 176544/176544 out of 190177/190176
+)
+union all
+--------------------------------------------------------------------------
 ---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
 select  
