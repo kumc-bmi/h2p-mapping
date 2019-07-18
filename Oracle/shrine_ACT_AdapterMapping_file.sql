@@ -211,30 +211,9 @@ union all
 ---------------- table_cd: ACT_PX_HCPCS_2018
 ---------------- table_name: ACT_HCPCS_PX_2018AA
 --------------------------------------------------------------------------
-select /*+ parallel */
-'\\ACT_PX_HCPCS_2018' || sh.C_FULLNAME shrine_term,
-'\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
-from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
-  on replace(sh.C_BASECODE,'HCPCS', 'HCPCS') = he.c_basecode
-  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
-  --5285/5285 out of 7121/7120
-union all
-select /*+ parallel */ 
-'\\ACT_PX_HCPCS_2018' || sh.C_FULLNAME shrine_term,
-'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10\' heron_term
-from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
-where c_basecode not in
-(
-select /*+ parallel */
-sh.c_basecode
-from shrine_ont_act.ACT_HCPCS_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
-  on replace(sh.C_BASECODE,'HCPCS', 'HCPCS') = he.c_basecode
-  where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
-  --5285/5285 out of 7121/7120
-)
-union all
+-- C_BASECODE prefix (HCPCS) is the same on HERON and SHRINE
+-- No Need to do this mapping and will do 1 to 1 mapping
+-- blueheronmetadata.ACT_HCPCS_PX_2018AA will able to query childs as well.
 --------------------------------------------------------------------------
 ---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
