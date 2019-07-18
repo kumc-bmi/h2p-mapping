@@ -73,3 +73,103 @@ group by ib.c_basecode, ib.c_fullname
      , update_date, download_date, sysdate, sourcesystem_cd
 ;
 commit;
+
+define upload_id='''${upload_id}''';
+
+set echo on;
+
+whenever sqlerror continue;
+--select 'exec dbms_utility.exec_ddl_statement@deid('||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''||')'|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318');
+--exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_MED_VA_V2_092818');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_LABS');
+exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS');
+whenever sqlerror exit sql.sqlcode;
+
+--select 'exec dbms_utility.exec_ddl_statement@deid('||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' )'||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA as select * from SHRINE_ONT_ACT.ACT_LOINC_LAB_2018AA' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318 as select * from SHRINE_ONT_ACT.ACT_MED_ALPHA_V2_121318' ) ;
+--exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_MED_VA_V2_092818 as select * from SHRINE_ONT_ACT.ACT_MED_VA_V2_092818' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS as select * from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ONT_ACT.NCATS_ICD10_ICD9_DX_V1' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_LABS as select * from SHRINE_ONT_ACT.NCATS_LABS' ) ;
+exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_ACT.NCATS_VISIT_DETAILS' ) ;
+
+DELETE FROM
+BlueHeronData.concept_dimension@deid
+where SOURCESYSTEM_CD='NCATS'
+	and upload_id=&&upload_id
+-- and concept_path like '\ACT\%'
+-- ACT ICD9 and 10 dignosis folder path starts with \Diagnoses\
+;
+
+
+insert into BlueHeronData.concept_dimension@deid(
+  concept_cd, 
+  concept_path, 
+  name_char,
+  update_date, 
+  download_date, 
+  import_date, 
+  sourcesystem_cd,
+  upload_id
+  )
+select distinct 
+  ib.c_basecode,
+  -- Previously, ib.c_fullname was selected instead of ib.c_dimcode.  
+  -- This was incorrect, because concept searches look for c_dimcode, 
+  -- but it wasn't a huge problem because c_fullname and c_dimcode were  
+  -- always identical. The SCILHS-based procedures ontology update (#26) 
+  -- introduced terms where that is not true, which shed light on the error 
+  -- and resulted in the change from ib.c_fullname to ib.c_dimcode.
+  -- HERE I am using c_fullname again as C_dimecode has date in it.
+  ib.c_fullname, 
+  max(ib.c_name), 
+  update_date, 
+  download_date, 
+  sysdate, 
+  'NCATS' sourcesystem_cd,
+  &&upload_id upload_id
+from 
+(
+--select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+--from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS_HERON@deid
+--union all
+--select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+--from BLUEHERONMETADATA.NCATS_ICD9_DIAG_HERON@deid
+--union all
+--select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+--from BLUEHERONMETADATA.NCATS_ICD9_PROC_HERON@deid
+--union all
+--select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+--from BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1_HERON@deid
+--union all
+--union all
+--select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+--from BLUEHERONMETADATA.ncats_labs@deid
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.ncats_visit_details@deid
+union all
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.ACT_MED_VA_V2_092818@deid
+) ib
+where ib.c_basecode is not null
+group by ib.c_basecode, ib.c_fullname
+     , update_date, download_date, sysdate, sourcesystem_cd
+;
+commit;
