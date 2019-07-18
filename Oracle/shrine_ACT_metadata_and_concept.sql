@@ -115,13 +115,13 @@ commit;
 -- visit and med  CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
 DELETE FROM
-BlueHeronData.concept_dimension@deid
+BlueHeronData.concept_dimension
 where SOURCESYSTEM_CD='NCATS'
 	and upload_id=&&upload_id
 ;
 
 
-insert into BlueHeronData.concept_dimension@deid(
+insert into BlueHeronData.concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
@@ -150,25 +150,25 @@ select distinct
 from 
 (
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS_HERON@deid
+--from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS_HERON
 --union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_ICD9_DIAG_HERON@deid
+--from BLUEHERONMETADATA.NCATS_ICD9_DIAG_HERON
 --union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_ICD9_PROC_HERON@deid
+--from BLUEHERONMETADATA.NCATS_ICD9_PROC_HERON
 --union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1_HERON@deid
+--from BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1_HERON
 --union all
 --union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.ncats_labs@deid
+--from BLUEHERONMETADATA.ncats_labs
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
-from BLUEHERONMETADATA.ncats_visit_details@deid
+from BLUEHERONMETADATA.ncats_visit_details
 union all
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
-from BLUEHERONMETADATA.ACT_MED_VA_V2_092818@deid
+from BLUEHERONMETADATA.ACT_MED_VA_V2_092818
 ) ib
 where ib.c_basecode is not null
 group by ib.c_basecode, ib.c_fullname
