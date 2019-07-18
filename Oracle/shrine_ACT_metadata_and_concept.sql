@@ -169,6 +169,9 @@ from BLUEHERONMETADATA.ncats_visit_details
 union all
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 from BLUEHERONMETADATA.ACT_MED_VA_V2_092818
+union all
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA
 ) ib
 where ib.c_basecode is not null
 group by ib.c_basecode, ib.c_fullname
