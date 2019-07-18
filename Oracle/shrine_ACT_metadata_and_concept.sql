@@ -117,7 +117,7 @@ commit;
 DELETE FROM
 BlueHeronData.concept_dimension
 where SOURCESYSTEM_CD='NCATS'
-	and upload_id=&&upload_id
+	and upload_id='&1'
 ;
 
 
