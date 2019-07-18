@@ -1,3 +1,39 @@
+set echo on;
+-------------------------------------------------------------------------------
+-- Create BLUEHERONMETADATA.ont tables
+-------------------------------------------------------------------------------
+whenever sqlerror continue;
+--select '||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
+drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA;
+drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA;
+drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA;
+drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA;
+drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA;
+drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA;
+drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA;
+drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318;
+--drop table BLUEHERONMETADATA.ACT_MED_VA_V2_092818;
+drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS;
+drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1;
+drop table BLUEHERONMETADATA.NCATS_LABS;
+drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS;
+whenever sqlerror exit sql.sqlcode;
+
+--select '||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
+create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
+create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA;
+create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA;
+create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA;
+create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA;
+create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA;
+create table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA as select * from SHRINE_ONT_ACT.ACT_LOINC_LAB_2018AA;
+create table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318 as select * from SHRINE_ONT_ACT.ACT_MED_ALPHA_V2_121318;
+--create table BLUEHERONMETADATA.ACT_MED_VA_V2_092818 as select * from SHRINE_ONT_ACT.ACT_MED_VA_V2_092818;
+create table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS as select * from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS;
+create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ONT_ACT.NCATS_ICD10_ICD9_DX_V1;
+create table BLUEHERONMETADATA.NCATS_LABS as select * from SHRINE_ONT_ACT.NCATS_LABS;
+create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_ACT.NCATS_VISIT_DETAILS;
+
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
 -------------------------------------------------------------------------------
@@ -74,48 +110,14 @@ group by ib.c_basecode, ib.c_fullname
 ;
 commit;
 
-define upload_id='''${upload_id}''';
 
-set echo on;
-
-whenever sqlerror continue;
---select 'exec dbms_utility.exec_ddl_statement@deid('||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''||')'|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318');
---exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.ACT_MED_VA_V2_092818');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_LABS');
-exec dbms_utility.exec_ddl_statement@deid('drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS');
-whenever sqlerror exit sql.sqlcode;
-
---select 'exec dbms_utility.exec_ddl_statement@deid('||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' )'||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA as select * from SHRINE_ONT_ACT.ACT_LOINC_LAB_2018AA' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318 as select * from SHRINE_ONT_ACT.ACT_MED_ALPHA_V2_121318' ) ;
---exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.ACT_MED_VA_V2_092818 as select * from SHRINE_ONT_ACT.ACT_MED_VA_V2_092818' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS as select * from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ONT_ACT.NCATS_ICD10_ICD9_DX_V1' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_LABS as select * from SHRINE_ONT_ACT.NCATS_LABS' ) ;
-exec dbms_utility.exec_ddl_statement@deid('create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_ACT.NCATS_VISIT_DETAILS' ) ;
-
+-------------------------------------------------------------------------------
+-- visit and med  CONCEPT_DIMENSION
+-------------------------------------------------------------------------------
 DELETE FROM
 BlueHeronData.concept_dimension@deid
 where SOURCESYSTEM_CD='NCATS'
 	and upload_id=&&upload_id
--- and concept_path like '\ACT\%'
--- ACT ICD9 and 10 dignosis folder path starts with \Diagnoses\
 ;
 
 
