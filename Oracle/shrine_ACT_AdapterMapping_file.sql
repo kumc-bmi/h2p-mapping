@@ -11,11 +11,16 @@ parallel 15
 NOLOGGING 
 as
 --------------------------------------------------------------------------
----------------- Demographics (NCATS_DEMOGRAPHICS and ACT_DEMO_MANUAL_MAPPING)
+---------------- Manual Mapping
 -------------------------------------------------------------------------- 
 select *
-from shrine_ont_act.ACT_DEMO_MANUAL_MAPPING
+-- ACT_DEMO_MANUAL_MAPPING table is version controled 
+-- at shrine_ACT_MANUAL_MAPPING_table.csv
+from shrine_ont_act.ACT_MANUAL_MAPPING
 union all
+--------------------------------------------------------------------------
+---------------- Demographics (NCATS_DEMOGRAPHICS)
+-------------------------------------------------------------------------- 
 select '\\ACT_DEMO' || sh.c_fullname, '\\i2b2_Demographics' || he.c_fullname
 from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS sh
 join BLUEHERONMETADATA.HERON_TERMS he
@@ -224,4 +229,19 @@ from shrine_ont_act.ncats_labs sh
 join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 --289 out of 288
+--------------------------------------------------------------------------
+---------------- ACT Visit Details	ACT_VISIT	NCATS_VISIT_DETAILS
+---------------- table_cd: ACT_VISIT
+---------------- table_name: NCATS_VISIT_DETAILS
+--------------------------------------------------------------------------
+/*
+1. Dan: DEM|AGEATV (concept_dimension) are pre calculated version of visit_dimension.
+2. No need to do any mapping for `\ACT\Visit Details\Age at visit\%` as it depends on 
+   visit_dimension and it works out of the box with HERON.
+3. Length of stay is on avialbe from UHC (HOSPTAL LOS) and it stored in obs_fact as 
+nval_num which I dont know how to map, and we dont have that info in vist dimension (ACT 
+expects to be in visit dimension)
+4. \\ACT_VISIT\ACT\Visit Details\Visit type\  need to be mapped manually and they are in
+  shrine_ACT_MANUAL_MAPPING_table.csv
+
 ;
