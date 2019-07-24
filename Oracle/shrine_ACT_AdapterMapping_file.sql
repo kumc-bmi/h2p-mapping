@@ -229,6 +229,34 @@ from shrine_ont_act.ncats_labs sh
 join BLUEHERONMETADATA.HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 --289 out of 288
+union all
+--------------------------------------------------------------------------
+---------------- ACT Laboratory Tests (Provisional)		
+---------------- table_cd: ACT_LAB_LOINC_2018
+---------------- table_name: ACT_LOINC_LAB_2018AA
+--------------------------------------------------------------------------
+select 
+'\\ACT_LAB_LOINC_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Laboratory Tests'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_LOINC_LAB_2018AA sh
+join BLUEHERONMETADATA.HERON_TERMS he
+  on sh.c_basecode = he.c_basecode
+  -- 121423/62727 out of 142860/79347
+union all
+select /*+ parallel */ 
+'\\ACT_LAB_LOINC_2018' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10\'heron_term
+from shrine_ont_act.ACT_LOINC_LAB_2018AA sh
+where c_basecode not in
+  (
+  select /*+ parallel */
+  sh.c_basecode
+  from shrine_ont_act.ACT_LOINC_LAB_2018AA sh
+  join BLUEHERONMETADATA.HERON_TERMS he
+    on sh.c_basecode = he.c_basecode
+    -- 121423/62727 out of 142860/79347
+  )
+--23899
 --------------------------------------------------------------------------
 ---------------- ACT Visit Details	ACT_VISIT	NCATS_VISIT_DETAILS
 ---------------- table_cd: ACT_VISIT
@@ -243,5 +271,7 @@ nval_num which I dont know how to map, and we dont have that info in vist dimens
 expects to be in visit dimension)
 4. \\ACT_VISIT\ACT\Visit Details\Visit type\  need to be mapped manually and they are in
   shrine_ACT_MANUAL_MAPPING_table.csv
+5. All Visit 1 to 1 mapping are alos stored in shrine_ACT_MANUAL_MAPPING_table.csv 
+   to make tracking easier.
 */
 ;
