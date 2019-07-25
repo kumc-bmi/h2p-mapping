@@ -1,9 +1,10 @@
+set echo on
+;
 define i2b2_etl_schema=&1;
 define SHRINE_ONT_SCHEMA=&2
 define MED_TABLE=&3
 define nB2=&4
 ;
-set echo on;
 /*
 TODO:
 1. fix @nb2 to id
