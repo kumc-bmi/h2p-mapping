@@ -1,12 +1,9 @@
-
 define i2b2_etl_schema=${i2b2_etl_schema};
 define SHRINE_ONT_SCHEMA=${SHRINE_ONT_SCHEMA}
 define MED_TABLE=${MED_TABLE}
-
-define nB2=nB2;
-
+define nB2=nB2
+;
 set echo on;
-whenever sqlerror exit sql.sqlcode;
 /*
 TODO:
 1. fix @nb2 to id
@@ -27,20 +24,23 @@ variables:
 8. map rest of rxcui(which are not mapped to heron using c_basecode_rxcui_mapped ) to med_id  (and save in c_basecode_rxcui_medid)
 9. create mapping file first preference c_basecode_rxcui and second preference c_basecode_rxcui_medid
 */
+-------------------------------------------------------------------------------
+--- create id db link
+-------------------------------------------------------------------------------
 whenever sqlerror continue;
 drop public database link nB2;
 whenever sqlerror exit sql.sqlcode;
 CREATE public DATABASE LINK nB2 
-   USING '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=8521)))(CONNECT_DATA=(SERVICE_NAME=nheronB2)))'; 
+   USING '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=8521)))(CONNECT_DATA=(SERVICE_NAME=nheronB2)))'
+; 
 -------------------------------------------------------------------------------
 --- tmp_med_mapping
 -------------------------------------------------------------------------------
 set echo on;
 whenever sqlerror continue;
 drop table tmp_med_mapping;
-whenever sqlerror exit sql.sqlcode;
-
-
+whenever sqlerror exit sql.sqlcode
+;
 CREATE table tmp_med_mapping
 parallel 20
 NOLOGGING 
@@ -124,6 +124,9 @@ c_basecode_rxcui, c_basecode_rxcui_mapped, c_basecode_medid_mapped,
 C_BASECODE_FINAL_MAPPING,heron_path
 having count(*)>=1
 ;
+-------------------------------------------------------------------------------
+--- TEMP_NCATS_MEDS_HERON
+-------------------------------------------------------------------------------
 whenever sqlerror continue;
 drop table TEMP_NCATS_MEDS_HERON;
 whenever sqlerror exit sql.sqlcode;
@@ -168,6 +171,9 @@ ALTER TABLE TEMP_NCATS_MEDS_HERON ADD C_METADATAXML clob;
 ALTER TABLE TEMP_NCATS_MEDS_HERON ADD C_COMMENT clob;
 CREATE INDEX "TEMP_NCATS_MED_IDX" ON "TEMP_NCATS_MEDS_HERON" ("C_FULLNAME") ;
 -- no dups
+-------------------------------------------------------------------------------
+--- TEMP_NCATS_MEDS_HERON_CNT
+-------------------------------------------------------------------------------
 whenever sqlerror continue;
 drop table TEMP_NCATS_MEDS_HERON_CNT;
 whenever sqlerror exit sql.sqlcode;
@@ -221,6 +227,9 @@ union all
     where cnt>1
     )
 ;
+-------------------------------------------------------------------------------
+--- blueheronmetadata."MED_TABLE"
+-------------------------------------------------------------------------------
 whenever sqlerror continue;
 drop table blueheronmetadata."&&MED_TABLE";
 whenever sqlerror exit sql.sqlcode;
