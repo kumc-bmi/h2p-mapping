@@ -1,7 +1,7 @@
-define i2b2_etl_schema=${i2b2_etl_schema};
-define SHRINE_ONT_SCHEMA=${SHRINE_ONT_SCHEMA}
-define MED_TABLE=${MED_TABLE}
-define nB2=nB2
+define i2b2_etl_schema=&1;
+define SHRINE_ONT_SCHEMA=&2
+define MED_TABLE=&3
+define nB2=&4
 ;
 set echo on;
 /*
