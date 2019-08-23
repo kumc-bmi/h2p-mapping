@@ -1,5 +1,13 @@
 set -x;
 
+# copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
+cp shrine_ACT_MANUAL_MAPPING_table.csv shrine_ACT_MANUAL_MAPPING_table.dat
+sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_MANUAL_MAPPING_table.ctl
+
+# copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
+cp shrine_ACT_META_MANUAL_MAPPING.csv shrine_ACT_META_MANUAL_MAPPING.dat
+sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_META_MANUAL_MAPPING.ctl
+
 #creates the AdapterMapping table 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql
 
@@ -11,6 +19,8 @@ sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep
 sed '/^\s*$/d' AdapterMappings.csv  > temp.csv && mv temp.csv AdapterMappings.csv
 
 # Followings are using metadata mapping approach
+# Original_1to1_mapping.csv will be added trough jenkins
+# TODO: Ask ACT commounity, is it ok to pulish Original_1to1_mapping.csv on github?
 grep  ACT_MED_ALPHA_2018  Original_1to1_mapping.csv >> original
 grep  ACT_MED_VA_2018     Original_1to1_mapping.csv >> original
 grep  ACT_PX_HCPCS_2018   Original_1to1_mapping.csv >> original
