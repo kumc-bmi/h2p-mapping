@@ -202,3 +202,5 @@ WHEN MATCHED THEN UPDATE
     SET trg.length_of_stay = src.nval_num;  
 commit;
 --342,973 rows merged.
+
+exit;
