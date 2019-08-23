@@ -21,11 +21,7 @@ union all
 --------------------------------------------------------------------------
 ---------------- Demographics (NCATS_DEMOGRAPHICS)
 -------------------------------------------------------------------------- 
-select '\\ACT_DEMO' || sh.c_fullname, '\\i2b2_Demographics' || he.c_fullname
-from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS sh
-join BLUEHERONMETADATA.HERON_TERMS he
-  on sh.c_basecode = he.c_basecode
-union all
+-- Demographics is mapped with using metadata approach.
 --------------------------------------------------------------------------
 ---------------- DX ICD 10-9 (NCATS_ICD10_ICD9_DX_V1)
 --------------------------------------------------------------------------
