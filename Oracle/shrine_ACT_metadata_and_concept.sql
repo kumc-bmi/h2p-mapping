@@ -47,17 +47,24 @@ create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_A
 drop table blueheronmetadata.ncats_demographics;
 create table blueheronmetadata.ncats_demographics
 as
-with all_data
+with mto1
 as
 (
-select
+select shrine_fullname
+from shrine_ont_act.act_meta_manual_mapping
+group by shrine_fullname
+having count(*)>1
+) 
+, upduplicated_parent as
+(
+select 
 tbl.C_HLEVEL ,
 tbl.C_FULLNAME ,
 tbl.C_NAME ,
 tbl.C_SYNONYM_CD ,
-tbl.C_VISUALATTRIBUTES ,
+'F' || substr(tbl.C_VISUALATTRIBUTES,2) C_VISUALATTRIBUTES ,
 tbl.C_TOTALNUM ,
-COALESCE (bmap.heron_basecode,tbl.C_BASECODE) C_BASECODE,
+null C_BASECODE,
 tbl.C_METADATAXML ,
 tbl.C_FACTTABLECOLUMN ,
 tbl.C_TABLENAME ,
@@ -76,33 +83,43 @@ tbl.M_APPLIED_PATH ,
 tbl.M_EXCLUSION_CD ,
 tbl.C_PATH ,
 tbl.C_SYMBOL 
---count(*), count (distinct(c_basecode)), count (distinct(heron_basecode)), count (distinct(shrine_basecode)), count(distinct (COALESCE (bmap.heron_basecode,tbl.C_BASECODE)))
--- 165	142	13	16	143 vs 164	142
 from SHRINE_ONT_ACT.ncats_demographics tbl
-left join shrine_ont_act.act_meta_manual_mapping bmap
-    on tbl.c_basecode=bmap.shrine_basecode
+where c_fullname
+in
+    (
+    select shrine_fullname
+    from mto1
+    )
 )
--- concept dimension need unique c_fullname
-, dup_c_full_name as
+, all_data as
 (
-select c_fullname from all_data GROUP BY c_fullname having count(c_fullname)>1
-)
-, unduplicated_rows as
-(
-select tbl.C_HLEVEL ,
-tbl.C_FULLNAME || tbl.C_BASECODE C_FULLNAME,
+select
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_HLEVEL +1
+        ELSE tbl.C_HLEVEL
+    END
+C_HLEVEL ,
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_FULLNAME || bmap.heron_basecode
+        ELSE tbl.C_FULLNAME
+    END
+C_FULLNAME,
 tbl.C_NAME ,
 tbl.C_SYNONYM_CD ,
 tbl.C_VISUALATTRIBUTES ,
 tbl.C_TOTALNUM ,
-tbl.C_BASECODE,
+COALESCE (bmap.heron_basecode,tbl.C_BASECODE) C_BASECODE,
 tbl.C_METADATAXML ,
 tbl.C_FACTTABLECOLUMN ,
 tbl.C_TABLENAME ,
 tbl.C_COLUMNNAME ,
 tbl.C_COLUMNDATATYPE ,
 tbl.C_OPERATOR ,
-tbl.C_DIMCODE ,
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_DIMCODE || bmap.heron_basecode
+        ELSE tbl.C_DIMCODE
+    END
+C_DIMCODE,
 tbl.C_COMMENT ,
 tbl.C_TOOLTIP ,
 tbl.UPDATE_DATE ,
@@ -114,23 +131,29 @@ tbl.M_APPLIED_PATH ,
 tbl.M_EXCLUSION_CD ,
 tbl.C_PATH ,
 tbl.C_SYMBOL
-from all_data tbl
-where c_fullname = (select * from dup_c_full_name)
+--,mto1.shrine_fullname
+from SHRINE_ONT_ACT.ncats_demographics tbl
+left join shrine_ont_act.act_meta_manual_mapping bmap
+    on tbl.c_basecode=bmap.shrine_basecode
+left join mto1 
+    on tbl.c_fullname=mto1.shrine_fullname
 )
-, unique_rows as
-(select * from all_data where c_fullname != (select * from dup_c_full_name) )
 , output as
 (
-select * from unduplicated_rows
-union all
-select * from unique_rows
+select * from upduplicated_parent
+union all 
+select * from all_data
 )
 select
 *
---count(*), count (distinct(c_basecode))
--- 165	143 vs 164	142
+--count(*), count (distinct(c_basecode)) --, count (distinct(heron_basecode)), count (distinct(shrine_basecode)), count(distinct (COALESCE (bmap.heron_basecode,tbl.C_BASECODE)))
+-- 166	143 vs 164	142
+-- 1 code maps to 2 code
+-- so, 143 looks ok
+-- so, 164 + 2 childs = 166 (look ok)
 from output
 ;
+
 
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
