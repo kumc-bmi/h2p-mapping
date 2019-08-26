@@ -38,6 +38,100 @@ create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ON
 create table BLUEHERONMETADATA.NCATS_LABS as select * from SHRINE_ONT_ACT.NCATS_LABS;
 create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_ACT.NCATS_VISIT_DETAILS;
 
+
+-------------------------------------------------------------------------------
+-- update BLUEHERONMETADATA.ont tables which are using metdatada approach
+-------------------------------------------------------------------------------
+-- for medication, look at shrine_act_medication_mapping.sql
+
+drop table blueheronmetadata.ncats_demographics;
+create table blueheronmetadata.ncats_demographics
+as
+with all_data
+as
+(
+select
+tbl.C_HLEVEL ,
+tbl.C_FULLNAME ,
+tbl.C_NAME ,
+tbl.C_SYNONYM_CD ,
+tbl.C_VISUALATTRIBUTES ,
+tbl.C_TOTALNUM ,
+COALESCE (bmap.heron_basecode,tbl.C_BASECODE) C_BASECODE,
+tbl.C_METADATAXML ,
+tbl.C_FACTTABLECOLUMN ,
+tbl.C_TABLENAME ,
+tbl.C_COLUMNNAME ,
+tbl.C_COLUMNDATATYPE ,
+tbl.C_OPERATOR ,
+tbl.C_DIMCODE ,
+tbl.C_COMMENT ,
+tbl.C_TOOLTIP ,
+tbl.UPDATE_DATE ,
+tbl.DOWNLOAD_DATE ,
+tbl.IMPORT_DATE ,
+tbl.SOURCESYSTEM_CD ,
+tbl.VALUETYPE_CD ,
+tbl.M_APPLIED_PATH ,
+tbl.M_EXCLUSION_CD ,
+tbl.C_PATH ,
+tbl.C_SYMBOL 
+--count(*), count (distinct(c_basecode)), count (distinct(heron_basecode)), count (distinct(shrine_basecode)), count(distinct (COALESCE (bmap.heron_basecode,tbl.C_BASECODE)))
+-- 165	142	13	16	143 vs 164	142
+from SHRINE_ONT_ACT.ncats_demographics tbl
+left join shrine_ont_act.act_meta_manual_mapping bmap
+    on tbl.c_basecode=bmap.shrine_basecode
+)
+-- concept dimension need unique c_fullname
+, dup_c_full_name as
+(
+select c_fullname from all_data GROUP BY c_fullname having count(c_fullname)>1
+)
+, unduplicated_rows as
+(
+select tbl.C_HLEVEL ,
+tbl.C_FULLNAME || tbl.C_BASECODE C_FULLNAME,
+tbl.C_NAME ,
+tbl.C_SYNONYM_CD ,
+tbl.C_VISUALATTRIBUTES ,
+tbl.C_TOTALNUM ,
+tbl.C_BASECODE,
+tbl.C_METADATAXML ,
+tbl.C_FACTTABLECOLUMN ,
+tbl.C_TABLENAME ,
+tbl.C_COLUMNNAME ,
+tbl.C_COLUMNDATATYPE ,
+tbl.C_OPERATOR ,
+tbl.C_DIMCODE ,
+tbl.C_COMMENT ,
+tbl.C_TOOLTIP ,
+tbl.UPDATE_DATE ,
+tbl.DOWNLOAD_DATE ,
+tbl.IMPORT_DATE ,
+tbl.SOURCESYSTEM_CD ,
+tbl.VALUETYPE_CD ,
+tbl.M_APPLIED_PATH ,
+tbl.M_EXCLUSION_CD ,
+tbl.C_PATH ,
+tbl.C_SYMBOL
+from all_data tbl
+where c_fullname = (select * from dup_c_full_name)
+)
+, unique_rows as
+(select * from all_data where c_fullname != (select * from dup_c_full_name) )
+, output as
+(
+select * from unduplicated_rows
+union all
+select * from unique_rows
+)
+select
+*
+--count(*), count (distinct(c_basecode))
+-- 165	143 vs 164	142
+from output
+;
+
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
 -------------------------------------------------------------------------------
@@ -119,7 +213,7 @@ commit;
 
 
 -------------------------------------------------------------------------------
--- visit, med, HCPCS CONCEPT_DIMENSION
+-- visit, med, HCPCS, demo CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
 DELETE FROM
 BlueHeronData.concept_dimension
@@ -156,9 +250,9 @@ select distinct
   '&1' upload_id
 from 
 (
---select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS_HERON
---union all
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS
+union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 --from BLUEHERONMETADATA.NCATS_ICD9_DIAG_HERON
 --union all
