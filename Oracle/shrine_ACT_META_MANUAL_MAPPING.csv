@@ -1,6 +1,7 @@
 "SHRINE_FULLNAME","SHRINE_BASECODE","HERON_BASECODE","HERON_FULLNAME"
 "\ACT\Demographics\Hispanic\No Information\","DEM|HISP:NI","DEM|ETHNICITY:@","\i2b2\Demographics\Ethnicity\Not Recorded\"
 "\ACT\Demographics\Hispanic\Yes\","DEM|HISP:Y","DEM|ETHNICITY:his","\i2b2\Demographics\Ethnicity\Hispanic\"
+"\ACT\Demographics\Hispanic\Yes\","DEM|HISP:Y","DEM|ETHNICITY:hispanic",\i2b2\Demographics\Ethnicity\Hispanic, Latino or Spanish Origin\"
 "\ACT\Demographics\Hispanic\No\","DEM|HISP:N","DEM|ETHNICITY:non-hispanic","\i2b2\Demographics\Ethnicity\Non Hispanic, Latino or Spanish Origin\"
 "\ACT\Demographics\Race\American Indian or Alaska Native\","DEM|RACE:NA","DEM|RACE:amerian ind","\i2b2\Demographics\Race\American Indian or Alaskan Native\"
 "\ACT\Demographics\Race\Asian\","DEM|RACE:AS","DEM|RACE:asian","\i2b2\Demographics\Race\Asian\"
