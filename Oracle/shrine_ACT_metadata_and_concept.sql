@@ -5,15 +5,17 @@ set echo on;
 whenever sqlerror continue;
 --select '||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
 drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA;
+-- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
 drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA;
+-- Following tables are using metadata approach,but require changes.
 -- drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318;
 --drop table BLUEHERONMETADATA.ACT_MED_VA_V2_092818;
-drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS;
+--drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS;
 drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1;
 drop table BLUEHERONMETADATA.NCATS_LABS;
 drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS;
@@ -21,18 +23,137 @@ whenever sqlerror exit sql.sqlcode;
 
 --select '||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
 create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
+-- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
 create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA as select * from SHRINE_ONT_ACT.ACT_LOINC_LAB_2018AA;
+-- Following tables are using metadata approach,but require changes.
 -- create table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318 as select * from SHRINE_ONT_ACT.ACT_MED_ALPHA_V2_121318;
 --create table BLUEHERONMETADATA.ACT_MED_VA_V2_092818 as select * from SHRINE_ONT_ACT.ACT_MED_VA_V2_092818;
-create table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS as select * from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS;
+--create table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS as select * from SHRINE_ONT_ACT.NCATS_DEMOGRAPHICS;
 create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ONT_ACT.NCATS_ICD10_ICD9_DX_V1;
 create table BLUEHERONMETADATA.NCATS_LABS as select * from SHRINE_ONT_ACT.NCATS_LABS;
 create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_ACT.NCATS_VISIT_DETAILS;
+
+
+-------------------------------------------------------------------------------
+-- update BLUEHERONMETADATA.ont tables which are using metdatada approach
+-------------------------------------------------------------------------------
+-- for medication, look at shrine_act_medication_mapping.sql
+
+drop table blueheronmetadata.ncats_demographics;
+create table blueheronmetadata.ncats_demographics
+as
+with mto1
+as
+(
+select shrine_fullname
+from shrine_ont_act.act_meta_manual_mapping
+group by shrine_fullname
+having count(*)>1
+) 
+, upduplicated_parent as
+(
+select 
+tbl.C_HLEVEL ,
+tbl.C_FULLNAME ,
+tbl.C_NAME ,
+tbl.C_SYNONYM_CD ,
+'F' || substr(tbl.C_VISUALATTRIBUTES,2) C_VISUALATTRIBUTES ,
+tbl.C_TOTALNUM ,
+null C_BASECODE,
+tbl.C_METADATAXML ,
+tbl.C_FACTTABLECOLUMN ,
+tbl.C_TABLENAME ,
+tbl.C_COLUMNNAME ,
+tbl.C_COLUMNDATATYPE ,
+tbl.C_OPERATOR ,
+tbl.C_DIMCODE ,
+tbl.C_COMMENT ,
+tbl.C_TOOLTIP ,
+tbl.UPDATE_DATE ,
+tbl.DOWNLOAD_DATE ,
+tbl.IMPORT_DATE ,
+tbl.SOURCESYSTEM_CD ,
+tbl.VALUETYPE_CD ,
+tbl.M_APPLIED_PATH ,
+tbl.M_EXCLUSION_CD ,
+tbl.C_PATH ,
+tbl.C_SYMBOL 
+from SHRINE_ONT_ACT.ncats_demographics tbl
+where c_fullname
+in
+    (
+    select shrine_fullname
+    from mto1
+    )
+)
+, all_data as
+(
+select
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_HLEVEL +1
+        ELSE tbl.C_HLEVEL
+    END
+C_HLEVEL ,
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_FULLNAME || bmap.heron_basecode
+        ELSE tbl.C_FULLNAME
+    END
+C_FULLNAME,
+tbl.C_NAME ,
+tbl.C_SYNONYM_CD ,
+tbl.C_VISUALATTRIBUTES ,
+tbl.C_TOTALNUM ,
+COALESCE (bmap.heron_basecode,tbl.C_BASECODE) C_BASECODE,
+tbl.C_METADATAXML ,
+tbl.C_FACTTABLECOLUMN ,
+tbl.C_TABLENAME ,
+tbl.C_COLUMNNAME ,
+tbl.C_COLUMNDATATYPE ,
+tbl.C_OPERATOR ,
+    CASE
+        WHEN mto1.shrine_fullname is not null then tbl.C_DIMCODE || bmap.heron_basecode
+        ELSE tbl.C_DIMCODE
+    END
+C_DIMCODE,
+tbl.C_COMMENT ,
+tbl.C_TOOLTIP ,
+tbl.UPDATE_DATE ,
+tbl.DOWNLOAD_DATE ,
+tbl.IMPORT_DATE ,
+tbl.SOURCESYSTEM_CD ,
+tbl.VALUETYPE_CD ,
+tbl.M_APPLIED_PATH ,
+tbl.M_EXCLUSION_CD ,
+tbl.C_PATH ,
+tbl.C_SYMBOL
+--,mto1.shrine_fullname
+from SHRINE_ONT_ACT.ncats_demographics tbl
+left join shrine_ont_act.act_meta_manual_mapping bmap
+    on tbl.c_basecode=bmap.shrine_basecode
+left join mto1 
+    on tbl.c_fullname=mto1.shrine_fullname
+)
+, output as
+(
+select * from upduplicated_parent
+union all 
+select * from all_data
+)
+select
+*
+--count(*), count (distinct(c_basecode)) --, count (distinct(heron_basecode)), count (distinct(shrine_basecode)), count(distinct (COALESCE (bmap.heron_basecode,tbl.C_BASECODE)))
+-- 166	143 vs 164	142
+-- 1 code maps to 2 code
+-- so, 143 looks ok
+-- so, 164 + 2 childs = 166 (look ok)
+from output
+;
+
 
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
@@ -115,7 +236,7 @@ commit;
 
 
 -------------------------------------------------------------------------------
--- visit, med, HCPCS CONCEPT_DIMENSION
+-- visit, med, HCPCS, demo CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
 DELETE FROM
 BlueHeronData.concept_dimension
@@ -152,9 +273,9 @@ select distinct
   '&1' upload_id
 from 
 (
---select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
---from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS_HERON
---union all
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS
+union all
 --select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 --from BLUEHERONMETADATA.NCATS_ICD9_DIAG_HERON
 --union all
@@ -202,3 +323,5 @@ WHEN MATCHED THEN UPDATE
     SET trg.length_of_stay = src.nval_num;  
 commit;
 --342,973 rows merged.
+
+exit;
