@@ -15,7 +15,7 @@ drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA;
 -- Following tables are using metadata approach,but require changes.
 -- drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318;
 --drop table BLUEHERONMETADATA.ACT_MED_VA_V2_092818;
---drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS;
+drop table BLUEHERONMETADATA.NCATS_DEMOGRAPHICS;
 drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1;
 drop table BLUEHERONMETADATA.NCATS_LABS;
 drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS;
@@ -44,7 +44,6 @@ create table BLUEHERONMETADATA.NCATS_VISIT_DETAILS as select * from SHRINE_ONT_A
 -------------------------------------------------------------------------------
 -- for medication, look at shrine_act_medication_mapping.sql
 
-drop table blueheronmetadata.ncats_demographics;
 create table blueheronmetadata.ncats_demographics
 as
 with mto1
