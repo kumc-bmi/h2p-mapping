@@ -130,10 +130,10 @@ where c_basecode like '%ICD10CM%'
   join BLUEHERONMETADATA.heron_terms he
     on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
   )
-;
 --example
 --\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947197012\ICD10CM_J22\	\\i2b2_Diagnoses\i2b2\Diagnoses\ICD10\A20098492\A18916341\A18913759\J22\
 --\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947183016\ICD10CM_U07.1\	\\i2b2_Demographics\i2b2\Demographics\LESS_THAN_10\
+union all
 --------------------------------------------------------------------------
 ---------------- Procedure ICD9 (ACT_ICD9CM_PX_2018AA)
 --------------------------------------------------------------------------
