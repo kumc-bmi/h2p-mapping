@@ -107,6 +107,29 @@ where c_basecode NOT in
   )
 union all
 --------------------------------------------------------------------------
+---------------- ACT_COVID_V1	(ACT_COVID)
+--------------------------------------------------------------------------
+select /*+ parallel */
+'\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_COVID sh
+join BLUEHERONMETADATA.heron_terms he
+  on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+--91830 out of 94505
+union all
+-- which are not joined based on ICD10 will be mapped less than 10
+select /*+ parallel */ 
+'\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10\' heron_term
+from shrine_ont_act.ACT_COVID sh
+where c_basecode NOT in
+  (
+  select /*+ parallel */ sh.c_basecode
+  from shrine_ont_act.ACT_COVID sh
+  join BLUEHERONMETADATA.heron_terms he
+    on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+  )
+--------------------------------------------------------------------------
 ---------------- Procedure ICD9 (ACT_ICD9CM_PX_2018AA)
 --------------------------------------------------------------------------
 select
