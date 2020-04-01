@@ -130,9 +130,45 @@ where c_basecode like '%ICD10CM%'
   join BLUEHERONMETADATA.heron_terms he
     on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
   )
+union all
 --example
 --\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947197012\ICD10CM_J22\	\\i2b2_Diagnoses\i2b2\Diagnoses\ICD10\A20098492\A18916341\A18913759\J22\
 --\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947183016\ICD10CM_U07.1\	\\i2b2_Demographics\i2b2\Demographics\LESS_THAN_10\
+-- for parent folder without ICD10 code.
+with t1 as
+(
+select c_fullname from BLUEHERONMETADATA.ACT_COVID
+where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
+and c_basecode not like 'ICD10CM%'
+)
+,t2 as
+(
+select c_fullname from BLUEHERONMETADATA.ACT_COVID
+where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
+)
+,act_diag_folder_map as
+(
+select 
+    '\\ACT_COVID_V1' ||t1.c_fullname shrine_term1,
+    '\\ACT_COVID_V1' ||t2.c_fullname shrine_term2
+from t1,t2
+where t2.c_fullname like ( t1.c_fullname || '%')
+)
+,act_daig_map as
+(
+select /*+ parallel */
+    '\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
+    '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+from shrine_ont_act.ACT_COVID sh
+join BLUEHERONMETADATA.heron_terms he
+  on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+where sh.c_basecode like '%ICD10CM%'
+)
+select 
+    act_diag_folder_map.shrine_term1 shrine_term,
+    act_daig_map.heron_term from act_diag_folder_map
+join act_daig_map
+    on act_daig_map.shrine_term=act_diag_folder_map.shrine_term2;
 union all
 --------------------------------------------------------------------------
 ---------------- Procedure ICD9 (ACT_ICD9CM_PX_2018AA)
