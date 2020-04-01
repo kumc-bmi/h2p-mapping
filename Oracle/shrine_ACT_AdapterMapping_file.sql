@@ -32,12 +32,26 @@ where t2.c_fullname like ( t1.c_fullname || '%')
 ,act_daig_map as
 (
 select /*+ parallel */
-    '\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
-    '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
+'\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_COVID sh
 join BLUEHERONMETADATA.heron_terms he
   on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
 where sh.c_basecode like '%ICD10CM%'
+union all
+-- which are not joined based on ICD10 will be mapped less than 10
+select /*+ parallel */ 
+'\\ACT_COVID_V1' || sh.C_FULLNAME shrine_term,
+'\\i2b2_Demographics' || '\i2b2\Demographics\LESS_THAN_10\' heron_term
+from shrine_ont_act.ACT_COVID sh
+where c_basecode like '%ICD10CM%'
+    and sh.c_basecode NOT in
+  (
+  select /*+ parallel */ sh.c_basecode
+  from shrine_ont_act.ACT_COVID sh
+  join BLUEHERONMETADATA.heron_terms he
+    on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
+  )
 )
 select 
     act_diag_folder_map.shrine_term1 shrine_path,
@@ -46,6 +60,8 @@ select
 join act_daig_map
     on act_daig_map.shrine_term=act_diag_folder_map.shrine_term2
 ;
+select * from blueheronmetadata.act_covid
+where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947183016\%';
 --------------------------------------------------------------------------
 ---------------- Adapter Mapping
 --------------------------------------------------------------------------  
