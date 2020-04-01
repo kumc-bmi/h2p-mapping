@@ -40,8 +40,9 @@ join BLUEHERONMETADATA.heron_terms he
 where sh.c_basecode like '%ICD10CM%'
 )
 select 
-    act_diag_folder_map.shrine_term1 shrine_term,
-    act_daig_map.heron_term from act_diag_folder_map
+    act_diag_folder_map.shrine_term1 shrine_path,
+    act_daig_map.heron_term heron_path
+    from act_diag_folder_map
 join act_daig_map
     on act_daig_map.shrine_term=act_diag_folder_map.shrine_term2
 ;
