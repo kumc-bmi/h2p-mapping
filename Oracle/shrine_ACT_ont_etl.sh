@@ -24,7 +24,9 @@ grep ACT_MED_ALPHA_2018 Original_1to1_mapping.csv >>original
 grep ACT_MED_VA_2018 Original_1to1_mapping.csv >>original
 grep ACT_PX_HCPCS_2018 Original_1to1_mapping.csv >>original
 grep ACT_DEMO Original_1to1_mapping.csv >>original
-grep ACT_COVID_V1 Original_1to1_mapping.csv >>original
+
+# covid diag (ICD10CM is being done by adapter mapping)
+grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' Original_1to1_mapping.csv >>original
 
 # Followings are using Adapter Mapping  approach
 #grep  ACT_PX_CPT_2018     Original_1to1_mapping.csv >> original
