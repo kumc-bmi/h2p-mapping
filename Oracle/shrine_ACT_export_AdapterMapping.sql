@@ -9,5 +9,9 @@ select '"'|| SHRINE_PATH || '","'|| HERON_PATH || '"' from  temp_act_adapter_map
 where SHRINE_PATH not like '%"%';
 select '''' || SHRINE_PATH ||  ''',''' || HERON_PATH || '''' from  temp_act_adapter_mapping
 where SHRINE_PATH  like '%"%';
+select '"'|| SHRINE_PATH || '","'|| HERON_PATH || '"' from  temp_act_adapter_mapping2
+where SHRINE_PATH not like '%"%';
+select '''' || SHRINE_PATH ||  ''',''' || HERON_PATH || '''' from  temp_act_adapter_mapping2
+where SHRINE_PATH  like '%"%';
 spool off
 exit;
