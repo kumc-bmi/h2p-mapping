@@ -12,9 +12,9 @@ NOLOGGING
 as
 with t1 as
 (
-select c_fullname from BLUEHERONMETADATA.ACT_COVID
+select c_fullname from BLUEHERONMETADATA.ACT_COVID 
 where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
-and c_basecode not like 'ICD10CM%'
+and (c_basecode not like 'ICD10CM%' or c_basecode is null)
 )
 ,t2 as
 (
