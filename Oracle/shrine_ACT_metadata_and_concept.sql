@@ -271,6 +271,10 @@ select distinct
   '&1' upload_id
 from 
 (
+-- remove following table(HERON_TERMS) during normal heron release.
+select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
+from BLUEHERONMETADATA.HERON_TERMS
+union all
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 from BLUEHERONMETADATA.NCATS_DEMOGRAPHICS
 union all
