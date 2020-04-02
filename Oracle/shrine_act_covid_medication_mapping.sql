@@ -235,9 +235,35 @@ union all
 -------------------------------------------------------------------------------
 --- blueheronmetadata."MED_TABLE"
 -------------------------------------------------------------------------------
--- whenever sqlerror continue;
--- drop table blueheronmetadata."&&MED_TABLE";
--- whenever sqlerror exit sql.sqlcode;
--- create table blueheronmetadata."&&MED_TABLE"
--- as
--- select * from TEMP_NCATS_MEDS_HERON2;
+delete  blueheronmetadata."&&MED_TABLE"
+where c_fullname like '&&C_FULLNAME_WHERE_CALUSE'
+;
+insert into blueheronmetadata."&&MED_TABLE"
+select 
+C_HLEVEL ,
+C_FULLNAME ,
+C_NAME ,
+C_SYNONYM_CD ,
+C_VISUALATTRIBUTES ,
+C_TOTALNUM ,
+C_BASECODE ,
+C_METADATAXML ,
+C_FACTTABLECOLUMN ,
+C_TABLENAME ,
+C_COLUMNNAME ,
+C_COLUMNDATATYPE ,
+C_OPERATOR ,
+C_DIMCODE ,
+C_COMMENT ,
+C_TOOLTIP ,
+M_APPLIED_PATH ,
+UPDATE_DATE ,
+DOWNLOAD_DATE ,
+IMPORT_DATE ,
+SOURCESYSTEM_CD ,
+VALUETYPE_CD ,
+M_EXCLUSION_CD ,
+C_PATH ,
+C_SYMBOL 
+from TEMP_NCATS_MEDS_HERON2;
+commit;
