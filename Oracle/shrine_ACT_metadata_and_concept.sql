@@ -184,7 +184,10 @@ M_EXCLUSION_CD ,
 C_PATH ,
 C_SYMBOL 
 from blueheronmetadata.act_covid
-where c_basecode like 'CPT4%'
+where c_basecode like 'CPT4:%'
+;
+delete from blueheronmetadata.act_covid
+where c_basecode like 'CPT:%'
 ;
 commit
 ;
