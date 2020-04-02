@@ -4,6 +4,7 @@ define i2b2_etl_schema=&1;
 define SHRINE_ONT_SCHEMA=&2
 define MED_TABLE=&3
 define nB2=&4
+define C_FULLNAME_WHERE_CALUSE=&5
 ;
 /*
 TODO:
@@ -87,7 +88,7 @@ with clarity_med_id_to_rxcui as (
   from "&&SHRINE_ONT_SCHEMA"."&&MED_TABLE" sh
   left JOIN nui_to_rxcui nui_to_rxcui
     on sh.c_basecode=nui_to_rxcui.code
-  where sh.c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0087111\UMLS_C0013227\%'
+  where sh.c_fullname like '&&C_FULLNAME_WHERE_CALUSE'
   )
 , med_mapping as
 (
@@ -165,7 +166,7 @@ sh.C_SYMBOL C_SYMBOL
 from "&&SHRINE_ONT_SCHEMA"."&&MED_TABLE" sh
 left join tmp_med_mapping he
 on sh.C_FULLNAME = he.c_fullname
-where sh.c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0087111\UMLS_C0013227\%'
+where sh.c_fullname like '&&C_FULLNAME_WHERE_CALUSE'
 ) 
 group by C_HLEVEL , C_FULLNAME , C_NAME , C_SYNONYM_CD , C_VISUALATTRIBUTES , C_TOTALNUM , C_BASECODE , C_FACTTABLECOLUMN , C_TABLENAME , C_COLUMNNAME , C_COLUMNDATATYPE , C_OPERATOR , C_DIMCODE ,  C_TOOLTIP , UPDATE_DATE , DOWNLOAD_DATE , IMPORT_DATE , SOURCESYSTEM_CD , VALUETYPE_CD , M_APPLIED_PATH , M_EXCLUSION_CD , C_PATH , C_SYMBOL
 having count(*) >= 1
@@ -229,7 +230,7 @@ union all
     from TEMP_NCATS_MEDS_HERON_CNT
     where cnt>1
     )
-  and  c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0087111\UMLS_C0013227\%'
+  and  c_fullname like '&&C_FULLNAME_WHERE_CALUSE'
 ;
 -------------------------------------------------------------------------------
 --- blueheronmetadata."MED_TABLE"
