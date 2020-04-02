@@ -152,8 +152,73 @@ select
 -- so, 164 + 2 childs = 166 (look ok)
 from output
 ;
-
-
+-------------------------------------------------------------------------------------------------------------------------------
+--- COVID LABS CPT4
+-- 1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
+------------------------------------------------------------------------------------------------------------------------------
+insert into blueheronmetadata.act_covid
+select
+C_HLEVEL ,
+C_FULLNAME ,
+C_NAME ,
+C_SYNONYM_CD ,
+C_VISUALATTRIBUTES ,
+C_TOTALNUM ,
+replace(C_BASECODE,'CPT4','CPT') ,
+C_METADATAXML ,
+C_FACTTABLECOLUMN ,
+C_TABLENAME ,
+C_COLUMNNAME ,
+C_COLUMNDATATYPE ,
+C_OPERATOR ,
+C_DIMCODE ,
+C_COMMENT ,
+C_TOOLTIP ,
+M_APPLIED_PATH ,
+UPDATE_DATE ,
+DOWNLOAD_DATE ,
+IMPORT_DATE ,
+SOURCESYSTEM_CD ,
+VALUETYPE_CD ,
+M_EXCLUSION_CD ,
+C_PATH ,
+C_SYMBOL 
+from blueheronmetadata.act_covid
+where c_basecode like 'CPT4%'
+;
+commit
+;
+-------------------------------------------------------------------------------------------------------------------------------
+--- COVID LABS HCPCS
+--- same formate (no need to map, 0/2 avialbe in HERON) 
+------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------
+-- COVID LABS LOINC
+-- TODO: Find out derived facts for LOINC
+------------------------------------------------------------------------------------------------------------------------------
+/*
+from:Morris, Michele <mim18@pitt.edu>
+Yes map the labs to the derived facts. I think that is what most sites are doing at this point. Your version of the files may 
+have an error where Positive and Negative have the same code but that is fixed in the updated version of the files which I am 
+getting ready to repost. 
+ANY Negative Lab Test  UMLS:C1334932
+ANY Positive Lab Test  UMLS:C1335447
+ANY Pending Lab Test  UMLS:C1611271
+ANY Equivocal Lab Test  UMLS:C4303880
+If you cannot map the lab to one of the 4 values you should map to Laboratory Testing
+Laboratory Testing  UMLS:C0022885
+*/
+-------------------------------------------------------------------------------------------------------------------------------
+--- LABS UMLS
+-- Is folder(or leaf) which could have one to many relationsship.
+------------------------------------------------------------------------------------------------------------------------------
+/*
+Lab Orders	UMLS:C0086143
+ANY Positive Lab Test	UMLS:C1444714
+ANY Negative Lab Test	UMLS:C1444714
+ANY Pending Lab Test	UMLS:C1611271
+ANY Equivocal Lab Test	UMLS:C4303880
+*/
 -------------------------------------------------------------------------------
 -- TABLE_ACCESS
 -------------------------------------------------------------------------------
