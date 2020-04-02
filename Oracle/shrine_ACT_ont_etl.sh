@@ -44,4 +44,4 @@ fi
 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
 
-sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id
+sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
