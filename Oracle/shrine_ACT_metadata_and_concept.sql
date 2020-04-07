@@ -212,6 +212,76 @@ ANY Equivocal Lab Test  UMLS:C4303880
 If you cannot map the lab to one of the 4 values you should map to Laboratory Testing
 Laboratory Testing  UMLS:C0022885
 */
+insert into blueheronmetadata.act_covid
+select 
+C_HLEVEL ,
+C_FULLNAME ,
+C_NAME ,
+C_SYNONYM_CD ,
+C_VISUALATTRIBUTES ,
+C_TOTALNUM ,
+'COVID-xyz-test:NEGATIVE' C_BASECODE ,
+C_METADATAXML ,
+C_FACTTABLECOLUMN ,
+C_TABLENAME ,
+C_COLUMNNAME ,
+C_COLUMNDATATYPE ,
+C_OPERATOR ,
+C_DIMCODE ,
+C_COMMENT ,
+C_TOOLTIP ,
+M_APPLIED_PATH ,
+UPDATE_DATE ,
+DOWNLOAD_DATE ,
+IMPORT_DATE ,
+SOURCESYSTEM_CD ,
+VALUETYPE_CD ,
+M_EXCLUSION_CD ,
+C_PATH ,
+C_SYMBOL 
+from blueheronmetadata.act_covid
+where c_basecode = 'LOINC:94310-0 NEGATIVE'
+;
+DELETE
+from blueheronmetadata.act_covid
+where c_basecode = 'LOINC:94310-0 NEGATIVE'
+;
+commit;
+insert into blueheronmetadata.act_covid
+select
+C_HLEVEL ,
+C_FULLNAME ,
+C_NAME ,
+C_SYNONYM_CD ,
+C_VISUALATTRIBUTES ,
+C_TOTALNUM ,
+'COVID-xyz-test:POSITIVE' C_BASECODE ,
+C_METADATAXML ,
+C_FACTTABLECOLUMN ,
+C_TABLENAME ,
+C_COLUMNNAME ,
+C_COLUMNDATATYPE ,
+C_OPERATOR ,
+C_DIMCODE ,
+C_COMMENT ,
+C_TOOLTIP ,
+M_APPLIED_PATH ,
+UPDATE_DATE ,
+DOWNLOAD_DATE ,
+IMPORT_DATE ,
+SOURCESYSTEM_CD ,
+VALUETYPE_CD ,
+M_EXCLUSION_CD ,
+C_PATH ,
+C_SYMBOL 
+from blueheronmetadata.act_covid
+where c_basecode = 'LOINC:94310-0 POSITIVE'
+;
+DELETE
+from blueheronmetadata.act_covid
+where c_basecode = 'LOINC:94310-0 POSITIVE'
+;
+commit;
 -------------------------------------------------------------------------------------------------------------------------------
 --- LABS UMLS
 -- Is folder(or leaf) which could have one to many relationsship.
