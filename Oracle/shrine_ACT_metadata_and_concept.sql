@@ -249,7 +249,7 @@ commit;
 -------------------------------------------------------------------------------
 -- LESS_THAN_10 HERON_TERMS
 -------------------------------------------------------------------------------
-DELETE /*+ PARALLEL("BLUEHERONMETADATA"."HERON_TERMS") */ from 
+DELETE /*+ PARALLEL */ from 
 "BLUEHERONMETADATA"."HERON_TERMS"
 where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\'
 ;
