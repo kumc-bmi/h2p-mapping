@@ -249,7 +249,7 @@ commit;
 -------------------------------------------------------------------------------
 -- LESS_THAN_10 HERON_TERMS
 -------------------------------------------------------------------------------
-DELETE from 
+DELETE /*+ PARALLEL("BLUEHERONMETADATA"."HERON_TERMS") */ from 
 "BLUEHERONMETADATA"."HERON_TERMS"
 where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\'
 ;
@@ -261,11 +261,11 @@ INSERT INTO "BLUEHERONMETADATA"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_S
 -------------------------------------------------------------------------------
 -- LESS_THAN_10 CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
-DELETE FROM
+DELETE  /*+ PARALLEL */ FROM
 "&&heron_data_schema".concept_dimension
 where concept_path = '\i2b2\Demographics\LESS_THAN_10\'
 ;
-insert into "&&heron_data_schema".concept_dimension(
+insert /*+ PARALLEL */ into "&&heron_data_schema".concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
@@ -275,7 +275,7 @@ insert into "&&heron_data_schema".concept_dimension(
   sourcesystem_cd,
   upload_id
   )
-select distinct 
+select /*+ PARALLEL */ distinct 
   ib.c_basecode,
   -- Previously, ib.c_fullname was selected instead of ib.c_dimcode.  
   -- This was incorrect, because concept searches look for c_dimcode, 
@@ -307,14 +307,14 @@ commit;
 -------------------------------------------------------------------------------
 -- visit, med, HCPCS, demo CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
-DELETE FROM
+DELETE  /*+ PARALLEL */ FROM
 "&&heron_data_schema".concept_dimension
 where SOURCESYSTEM_CD='NCATS'
 	and upload_id='&1'
 ;
 
 
-insert into "&&heron_data_schema".concept_dimension(
+insert  /*+ PARALLEL */ into "&&heron_data_schema".concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
