@@ -324,7 +324,7 @@ insert  /*+  PARALLEL (20) */ into "&&heron_data_schema".concept_dimension(
   sourcesystem_cd,
   upload_id
   )
-select distinct 
+select /*+  PARALLEL (20) */ distinct 
   ib.c_basecode,
   -- Previously, ib.c_fullname was selected instead of ib.c_dimcode.  
   -- This was incorrect, because concept searches look for c_dimcode, 
