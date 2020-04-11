@@ -377,6 +377,11 @@ commit;
 -------------------------------------------------------------------------------
 -- visit, med, HCPCS, demo CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
+whenever sqlerror continue;
+drop INDEX "NIGHTHERONDATA"."SOURCESYSTEM_CD_IDX";
+whenever sqlerror exit sql.sqlcode;
+CREATE INDEX "NIGHTHERONDATA"."SOURCESYSTEM_CD_IDX" ON "NIGHTHERONDATA"."CONCEPT_DIMENSION" ("SOURCESYSTEM_CD") nologging parallel 12 compress;
+
 DELETE  /*+  PARALLEL (20) */ FROM
 "&&heron_data_schema".concept_dimension
 where SOURCESYSTEM_CD='NCATS'
