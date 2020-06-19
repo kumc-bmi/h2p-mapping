@@ -1,6 +1,10 @@
 set echo on;
 
 whenever sqlerror continue;
+drop index SHRINE_ONT_ACT.ACT_COVID_EXCLUDE_IDX;
+drop index SHRINE_ONT_ACT.ACT_COVID_APPLIED_IDX;
+drop index SHRINE_ONT_ACT.ACT_COVID_fullname_IDX;
+drop index SHRINE_ONT_ACT.ACT_COVID_hlevel_IDX;
 drop index SHRINE_ONT_ACT.ACT_DEMO_APPLIED_IDX ;
 drop index SHRINE_ONT_ACT.ACT_DEMO_EXCLUDE_IDX ;
 drop index SHRINE_ONT_ACT.ACT_DX_10_9_APPLIED_IDX ;
@@ -33,7 +37,10 @@ whenever sqlerror exit sql.sqlcode;
 
 
 alter session set current_schema=shrine_ont_act;
-
+--------------------------------------------------------------------------------------------------------
+---M_EXCLUSION_CD
+--------------------------------------------------------------------------------------------------------
+CREATE INDEX ACT_COVID_EXCLUDE_IDX ON ACT_COVID(M_EXCLUSION_CD) PARALLEL 2;
 CREATE INDEX ACT_DX_ICD10_EXCLUDE_IDX ON ACT_ICD10CM_DX_2018AA(M_EXCLUSION_CD) PARALLEL 2;
 CREATE INDEX ACT_DX_ICD9_EXCLUDE_IDX ON ACT_ICD9CM_DX_2018AA(M_EXCLUSION_CD) PARALLEL 2;
 CREATE INDEX ACT_LAB_EXCLUDE_IDX ON ACT_LOINC_LAB_2018AA(M_EXCLUSION_CD) PARALLEL 2;
@@ -47,6 +54,10 @@ CREATE INDEX ACT_DX_10_9_EXCLUDE_IDX ON NCATS_ICD10_ICD9_DX_V1(M_EXCLUSION_CD) P
 CREATE INDEX ACT_VISIT_EXCLUDE_IDX ON NCATS_VISIT_DETAILS(M_EXCLUSION_CD) PARALLEL 2;
 CREATE INDEX ACT_MED_ALPHA_EXCLUDE_IDX ON ACT_MED_ALPHA_V2_121318(M_EXCLUSION_CD) PARALLEL 2;
 
+--------------------------------------------------------------------------------------------------------
+---M_APPLIED_PATH
+--------------------------------------------------------------------------------------------------------
+CREATE INDEX ACT_COVID_APPLIED_IDX ON ACT_COVID(M_APPLIED_PATH) PARALLEL 2;
 CREATE INDEX ACT_DX_ICD10_APPLIED_IDX ON ACT_ICD10CM_DX_2018AA(M_APPLIED_PATH) PARALLEL 2;
 CREATE INDEX ACT_DX_ICD9_APPLIED_IDX ON ACT_ICD9CM_DX_2018AA(M_APPLIED_PATH) PARALLEL 2;
 CREATE INDEX ACT_LAB_APPLIED_IDX ON ACT_LOINC_LAB_2018AA(M_APPLIED_PATH) PARALLEL 2;
@@ -60,10 +71,20 @@ CREATE INDEX ACT_DX_10_9_APPLIED_IDX ON NCATS_ICD10_ICD9_DX_V1(M_APPLIED_PATH) P
 CREATE INDEX ACT_VISIT_APPLIED_IDX ON NCATS_VISIT_DETAILS(M_APPLIED_PATH) PARALLEL 2;
 CREATE INDEX ACT_MED_ALPHA_APPLIED_IDX ON ACT_MED_ALPHA_V2_121318(M_APPLIED_PATH) PARALLEL 2;
 
+--------------------------------------------------------------------------------------------------------
+---c_fullname
+--------------------------------------------------------------------------------------------------------
+CREATE INDEX ACT_COVID_fullname_IDX ON ACT_COVID(c_fullname) PARALLEL 2;
 CREATE INDEX ACT_MED_VA_fullname_IDX ON ACT_MED_VA_V2_092818(c_fullname) PARALLEL 2;
-CREATE INDEX ACT_MED_VA_hlevel_IDX ON ACT_MED_VA_V2_092818(c_hlevel) PARALLEL 2;
-
 CREATE INDEX ACT_MED_ALPHA_fullname_IDX ON ACT_MED_ALPHA_V2_121318(c_fullname) PARALLEL 2;
+
+--------------------------------------------------------------------------------------------------------
+---c_hlevel
+--------------------------------------------------------------------------------------------------------
+CREATE INDEX ACT_COVID_hlevel_IDX ON ACT_COVID(c_hlevel) PARALLEL 2;
+CREATE INDEX ACT_MED_VA_hlevel_IDX ON ACT_MED_VA_V2_092818(c_hlevel) PARALLEL 2;
 CREATE INDEX ACT_MED_ALPHA_hlevel_IDX ON ACT_MED_ALPHA_V2_121318(c_hlevel) PARALLEL 2;
+
+
 
 exit;
