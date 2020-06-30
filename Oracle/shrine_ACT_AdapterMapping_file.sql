@@ -1,3 +1,5 @@
+define heron_ont_schema=&1 ;
+
 set echo on;
 --------------------------------------------------------------------------
 ---------------- Adapter Mapping
@@ -29,7 +31,7 @@ select
 '\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.NCATS_ICD10_ICD9_DX_V1 sh
-join BLUEHERONMETADATA.heron_terms he
+join "&&heron_ont_schema".heron_terms he
   on replace(sh.c_basecode,'ICD9CM:','ICD9:') = he.c_basecode
 where he.c_fullname like '\i2b2\Diagnoses\ICD9%'
 --25239/16291 out of 25,393/16,438
@@ -38,7 +40,7 @@ select
 '\\ACT_DX_10_9' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.NCATS_ICD10_ICD9_DX_V1 sh
-join BLUEHERONMETADATA.heron_terms he
+join "&&heron_ont_schema".heron_terms he
   on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
 --102,531/91,310 out off --102,757/91,586
 union all
@@ -49,7 +51,7 @@ select
 '\\ACT_DX_ICD9_2018' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD9CM_DX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
+inner join "&&heron_ont_schema".HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD9CM', 'ICD9') = he.c_basecode
   --79895
   where he.C_FULLNAME like '\i2b2\Diagnoses\ICD9\%'  
@@ -67,7 +69,7 @@ from
     select 
     distinct (sh.C_BASECODE)
     from shrine_ont_act.ACT_ICD9CM_DX_2018AA sh
-    inner join BLUEHERONMETADATA.HERON_TERMS he
+    inner join "&&heron_ont_schema".HERON_TERMS he
       on replace(sh.C_BASECODE,'ICD9CM', 'ICD9') = he.c_basecode
       --79895
       where he.C_FULLNAME like '\i2b2\Diagnoses\ICD9\%'
@@ -75,7 +77,7 @@ from
     )
 )not_default_icd9
 --127
-left join BLUEHERONMETADATA.HERON_TERMS ht
+left join "&&heron_ont_schema".HERON_TERMS ht
   on replace(not_default_icd9.C_BASECODE,'ICD9CM', 'ICD9') = ht.c_basecode
   where ht.C_FULLNAME like '\i2b2\Diagnoses\%'
 --126
@@ -89,7 +91,7 @@ select /*+ parallel */
 '\\ACT_DX_ICD10_2018' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Diagnoses'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
-join BLUEHERONMETADATA.heron_terms he
+join "&&heron_ont_schema".heron_terms he
   on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
 --91830 out of 94505
 union all
@@ -102,7 +104,7 @@ where c_basecode NOT in
   (
   select /*+ parallel */ sh.c_basecode
   from shrine_ont_act.ACT_ICD10CM_DX_2018AA sh
-  join BLUEHERONMETADATA.heron_terms he
+  join "&&heron_ont_schema".heron_terms he
     on replace(sh.c_basecode,'ICD10CM:','ICD10:') = he.c_basecode
   )
 union all
@@ -113,7 +115,7 @@ select
 '\\ACT_PX_ICD9_2018' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Procedures'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD9CM_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
+inner join "&&heron_ont_schema".HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD9PROC', 'ICD9') = he.c_basecode
   where he.C_FULLNAME like '\i2b2\Procedures\%'
   -- 4323
@@ -131,14 +133,14 @@ from
     select 
     distinct (sh.c_basecode)
     from shrine_ont_act.ACT_ICD9CM_PX_2018AA sh
-    inner join BLUEHERONMETADATA.HERON_TERMS he
+    inner join "&&heron_ont_schema".HERON_TERMS he
       on replace(sh.C_BASECODE,'ICD9PROC', 'ICD9') = he.c_basecode
       where he.C_FULLNAME like '\i2b2\Procedures\%'
       -- 4323
     )
   )not_default_proc
 --343
-join BLUEHERONMETADATA.HERON_TERMS ht
+join "&&heron_ont_schema".HERON_TERMS ht
   on replace(not_default_proc.C_BASECODE,'ICD9PROC', 'ICD9') = ht.c_basecode
 --341
 -- union all 4664 out of 4666
@@ -153,7 +155,7 @@ select /*+ parallel */
 '\\ACT_PX_ICD10_2018' || sh.C_FULLNAME shrine_term,
 '\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
+inner join "&&heron_ont_schema".HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD10PCS', 'ICD10') = he.c_basecode
   where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
   -- count/distinct
@@ -169,7 +171,7 @@ where c_basecode not in
 select /*+ parallel */
 sh.c_basecode
 from shrine_ont_act.ACT_ICD10PCS_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
+inner join "&&heron_ont_schema".HERON_TERMS he
   on replace(sh.C_BASECODE,'ICD10PCS', 'ICD10') = he.c_basecode
   where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
   -- count/distinct
@@ -185,7 +187,7 @@ select /*+ parallel */
 '\\ACT_PX_CPT_2018' || sh.C_FULLNAME shrine_term,
 '\\PCORI_PROCEDURE'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_CPT_PX_2018AA sh
-inner join BLUEHERONMETADATA.HERON_TERMS he
+inner join "&&heron_ont_schema".HERON_TERMS he
   on replace(sh.C_BASECODE,'CPT4', 'CPT') = he.c_basecode
   where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
   -- count/distinct
@@ -200,7 +202,7 @@ where c_basecode not in
   select /*+ parallel */
   sh.c_basecode
   from shrine_ont_act.ACT_CPT_PX_2018AA sh
-  inner join BLUEHERONMETADATA.HERON_TERMS he
+  inner join "&&heron_ont_schema".HERON_TERMS he
     on replace(sh.C_BASECODE,'CPT4', 'CPT') = he.c_basecode
     where he.C_FULLNAME like '\PCORI\PROCEDURE\%'
      -- count/distinct
@@ -214,7 +216,7 @@ union all
 --------------------------------------------------------------------------
 -- C_BASECODE prefix (HCPCS) is the same on HERON and SHRINE
 -- No Need to do this mapping and will do 1 to 1 mapping
--- blueheronmetadata.ACT_HCPCS_PX_2018AA will able to query childs as well.
+-- "&&heron_ont_schema".ACT_HCPCS_PX_2018AA will able to query childs as well.
 --------------------------------------------------------------------------
 ---------------- LABS (ncats_labs)
 --------------------------------------------------------------------------
@@ -222,7 +224,7 @@ select
 '\\ACT_LAB' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Laboratory Tests'||he.C_FULLNAME heron_term
 from shrine_ont_act.ncats_labs sh
-join BLUEHERONMETADATA.HERON_TERMS he
+join "&&heron_ont_schema".HERON_TERMS he
   on sh.c_basecode = he.c_basecode
 --289 out of 288
 union all
@@ -235,7 +237,7 @@ select
 '\\ACT_LAB_LOINC_2018' || sh.C_FULLNAME shrine_term,
 '\\i2b2_Laboratory Tests'||he.C_FULLNAME heron_term
 from shrine_ont_act.ACT_LOINC_LAB_2018AA sh
-join BLUEHERONMETADATA.HERON_TERMS he
+join "&&heron_ont_schema".HERON_TERMS he
   on sh.c_basecode = he.c_basecode
   -- 121423/62727 out of 142860/79347
 union all
@@ -248,7 +250,7 @@ where c_basecode not in
   select /*+ parallel */
   sh.c_basecode
   from shrine_ont_act.ACT_LOINC_LAB_2018AA sh
-  join BLUEHERONMETADATA.HERON_TERMS he
+  join "&&heron_ont_schema".HERON_TERMS he
     on sh.c_basecode = he.c_basecode
     -- 121423/62727 out of 142860/79347
   )
