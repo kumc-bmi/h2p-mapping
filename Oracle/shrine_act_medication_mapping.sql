@@ -4,6 +4,7 @@ define i2b2_etl_schema=&1;
 define SHRINE_ONT_SCHEMA=&2
 define MED_TABLE=&3
 define nB2=&4
+define heron_ont_schema=&5
 ;
 /*
 TODO:
@@ -229,11 +230,11 @@ union all
     )
 ;
 -------------------------------------------------------------------------------
---- blueheronmetadata."MED_TABLE"
+--- "&&heron_ont_schema"."MED_TABLE"
 -------------------------------------------------------------------------------
 whenever sqlerror continue;
-drop table blueheronmetadata."&&MED_TABLE";
+drop table "&&heron_ont_schema"."&&MED_TABLE";
 whenever sqlerror exit sql.sqlcode;
-create table blueheronmetadata."&&MED_TABLE"
+create table "&&heron_ont_schema"."&&MED_TABLE"
 as
 select * from TEMP_NCATS_MEDS_HERON2;
