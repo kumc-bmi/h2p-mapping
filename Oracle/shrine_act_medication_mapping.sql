@@ -100,7 +100,7 @@ with clarity_med_id_to_rxcui as (
   ,sh.c_basecode) --coment this line out to find out which have been not mapped.
   c_basecode_final_mapping
   from NCATS_MEDS_RXCUI sh
-  left JOIN BLUEHERONMETADATA.heron_terms he
+  left JOIN "&&heron_ont_schema".heron_terms he
     on sh.c_basecode_rxcui=he.c_basecode
   left JOIN clarity_med_id_to_rxcui medid_to_rxcui
     on sh.c_basecode_rxcui= 'RXCUI:' ||medid_to_rxcui.rxcui
@@ -112,7 +112,7 @@ with clarity_med_id_to_rxcui as (
   he.c_name heron_c_name
   from med_mapping sh
   left
-  join BLUEHERONMETADATA.HERON_TERMS he
+  join "&&heron_ont_schema".HERON_TERMS he
     on sh.c_basecode_final_mapping = he.c_basecode
 )
 select 
