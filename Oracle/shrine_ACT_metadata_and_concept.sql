@@ -1,3 +1,4 @@
+define upload_id=&1 ;
 define heron_ont_schema=&2 ;
 
 set echo on;
@@ -221,7 +222,7 @@ select distinct
   download_date, 
   sysdate, 
   'NCATS' sourcesystem_cd,
-  '&1' upload_id
+  '&&upload_id' upload_id
 from 
 (
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
@@ -241,7 +242,7 @@ commit;
 DELETE FROM
 BlueHeronData.concept_dimension
 where SOURCESYSTEM_CD='NCATS'
-	and upload_id='&1'
+	and upload_id='&&upload_id'
 ;
 
 
@@ -270,7 +271,7 @@ select distinct
   download_date, 
   sysdate, 
   'NCATS' sourcesystem_cd,
-  '&1' upload_id
+  '&&upload_id' upload_id
 from 
 (
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
