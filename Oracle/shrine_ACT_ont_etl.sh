@@ -9,7 +9,7 @@ cp shrine_ACT_META_MANUAL_MAPPING.csv shrine_ACT_META_MANUAL_MAPPING.dat
 sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_META_MANUAL_MAPPING.ctl
 
 #creates the AdapterMapping table 
-sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql
+sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql "$heron_ont_schema"
 
 # export AdapterMapping_file as AdapterMappings.csv
 sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep -E "^ORA-|^ERROR" || true
@@ -46,4 +46,4 @@ fi
 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
 
-sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id
+sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql "$upload_id" "$heron_ont_schema"
