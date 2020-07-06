@@ -1,5 +1,6 @@
 define upload_id=&1 ;
 define heron_ont_schema=&2 ;
+define heron_data_schema=&3 ;
 
 set echo on;
 -------------------------------------------------------------------------------
@@ -194,10 +195,10 @@ INSERT INTO "&&heron_ont_schema"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_
 -- LESS_THAN_10 CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
 DELETE FROM
-BlueHeronData.concept_dimension
+"&&heron_data_schema".concept_dimension
 where concept_path = '\i2b2\Demographics\LESS_THAN_10\'
 ;
-insert into BlueHeronData.concept_dimension(
+insert into "&&heron_data_schema".concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
@@ -240,13 +241,13 @@ commit;
 -- visit, med, HCPCS, demo CONCEPT_DIMENSION
 -------------------------------------------------------------------------------
 DELETE FROM
-BlueHeronData.concept_dimension
+"&&heron_data_schema".concept_dimension
 where SOURCESYSTEM_CD='NCATS'
 	and upload_id='&&upload_id'
 ;
 
 
-insert into BlueHeronData.concept_dimension(
+insert into "&&heron_data_schema".concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
