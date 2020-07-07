@@ -312,11 +312,11 @@ commit;
 -- visit LOS
 -------------------------------------------------------------------------------
 MERGE
-INTO    BlueHerondata.visit_dimension trg
+INTO    "&&heron_data_schema".visit_dimension trg
 USING   (
         SELECT  t1.rowid AS rid, t2.nval_num
-        FROM    BlueHerondata.visit_dimension t1
-        JOIN    BlueHerondata.observation_fact t2
+        FROM    "&&heron_data_schema".visit_dimension t1
+        JOIN    "&&heron_data_schema".observation_fact t2
         ON      t1.encounter_num = t2.encounter_num
         WHERE   t2.concept_cd='UHC|LOS:1'
         ) src
