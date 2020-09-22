@@ -185,7 +185,7 @@ select
   td.pcori_basecode
 from terms_dxi td
 ;
-
+commit;
 
 -- Other diagnosis mappings such as modifiers for PDX, DX_SOURCE.
 insert into "&&i2b2_meta_schema".PCORNET_DIAG
@@ -705,6 +705,7 @@ whenever sqlerror continue;
   drop table pcornet_lab_loinc;
 whenever sqlerror exit;
 
+commit;		
 create table pcornet_lab_loinc as 
 with parent_loinc_codes as ( -- LOINC codes with children LOINC codes
   select p_loinc.*
