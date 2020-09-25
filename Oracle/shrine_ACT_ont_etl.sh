@@ -1,4 +1,6 @@
-set -x
+#!/bin/bash
+
+set -euxo pipefail
 
 # copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
 cp shrine_ACT_MANUAL_MAPPING_table.csv shrine_ACT_MANUAL_MAPPING_table.dat
