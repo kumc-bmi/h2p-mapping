@@ -1,6 +1,16 @@
 #!/bin/bash
 
+# given an upstream `mapping_input` csv, this script prepares the ACT ontology mapping in two ways:
+#
+# - through the `mapping_output` csv (typically called AdapterMappings.csv; provided to the shrine app)
+# - through `shrine_ACT_metadata_and_concept.sql`
+
 set -euxo pipefail
+
+: "$upload_id"
+: "$heron_data_schema"
+mapping_input="Original_1to1_mapping.csv"
+mapping_output="AdapterMappings.csv"
 
 # copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
 cp shrine_ACT_MANUAL_MAPPING_table.csv shrine_ACT_MANUAL_MAPPING_table.dat
@@ -10,40 +20,31 @@ sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_MANUAL_MAPPING_table.ctl
 cp shrine_ACT_META_MANUAL_MAPPING.csv shrine_ACT_META_MANUAL_MAPPING.dat
 sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_META_MANUAL_MAPPING.ctl
 
-#creates the AdapterMapping table
+# create the AdapterMapping table
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql
 
-# export AdapterMapping_file as AdapterMappings.csv
+# export AdapterMapping_file.  `AdapterMappings.csv` is created here!
 sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep -E "^ORA-|^ERROR" || true
 
-# removing empty lines from csv
-sed '/^\s*$/d' AdapterMappings.csv >temp.csv && mv temp.csv AdapterMappings.csv
+# remove empty lines from csv
+sed -i '/^\s*$/d' "$mapping_output"
 
 # Followings are using metadata mapping approach
 # Original_1to1_mapping.csv will be added trough jenkins
 # TODO: Ask ACT commounity, is it ok to pulish Original_1to1_mapping.csv on github?
-grep ACT_MED_ALPHA_2018 Original_1to1_mapping.csv >>original
-grep ACT_MED_VA_2018 Original_1to1_mapping.csv >>original
-grep ACT_PX_HCPCS_2018 Original_1to1_mapping.csv >>original
-grep ACT_DEMO Original_1to1_mapping.csv >>original
+grep -E '(ACT_DEMO|ACT_MED_ALPHA_2018|ACT_MED_VA_2018|ACT_PX_HCPCS_2018)' "$mapping_input" >> "$mapping_output"
 
-# covid diag (ICD10CM is being done by adapter mapping)
-grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' Original_1to1_mapping.csv >>original
+# remove covid diag (ICD10CM is being done by adapter mapping)
+grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' "$mapping_input" >> "$mapping_output"
 
-# Followings are using Adapter Mapping  approach
-#grep  ACT_PX_CPT_2018     Original_1to1_mapping.csv >> original
-#grep  ACT_DX_ICD10_2018   Original_1to1_mapping.csv >> original
-#grep  ACT_PX_ICD10_2018   Original_1to1_mapping.csv >> original
-#grep  ACT_LAB_LOINC_2018  Original_1to1_mapping.csv >> original
-#grep  ACT_VISIT           Original_1to1_mapping.csv >> original
+# the following are left out of the mapping_output csv
+#   ACT_PX_CPT_2018
+#   ACT_DX_ICD10_2018
+#   ACT_PX_ICD10_2018
+#   ACT_LAB_LOINC_2018
+#   ACT_VISIT
 
-cat original >>AdapterMappings.csv
-
-if [ "$what_to_do" == "only_AdapterMappings_file" ]; then
-    echo "exit 0"
-    exit 0
+if [ "$what_to_do" != "only_AdapterMappings_file" ]; then
+  sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
+  sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
 fi
-
-sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
-
-sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
