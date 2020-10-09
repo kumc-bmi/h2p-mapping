@@ -7,6 +7,9 @@
 
 set -euxo pipefail
 
+: "$USERNAME"
+: "$PASSWORD"
+: "$SID"
 : "$upload_id"
 : "$heron_data_schema"
 mapping_input="Original_1to1_mapping.csv"
