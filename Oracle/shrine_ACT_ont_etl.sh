@@ -18,15 +18,12 @@ mapping_output="AdapterMappings.csv"
 # creates shrine_ont_act.ACT_MANUAL_MAPPING
 sqlldr $USERNAME/$PASSWORD@$SID data=shrine_ACT_MANUAL_MAPPING_table.csv control=shrine_ACT_MANUAL_MAPPING_table.ctl
 
-# create the AdapterMapping table
 # consumes shrine_ont_act.ACT_MANUAL_MAPPING
+# creates temp_act_adapter_mapping2 and temp_act_adapter_mapping
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql
 
-# creates shrine_ont_act.ACT_META_MANUAL_MAPPING
-sqlldr $USERNAME/$PASSWORD@$SID data=shrine_ACT_META_MANUAL_MAPPING.csv control=shrine_ACT_META_MANUAL_MAPPING.ctl
-
-# export AdapterMapping_file.  `AdapterMappings.csv` is created here!
-# consumes shrine_ont_act.ACT_META_MANUAL_MAPPING
+# consumes temp_act_adapter_mapping and temp_act_adapter_mapping2
+# creates ./AdapterMappings.csv
 sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep -E "^ORA-|^ERROR" || true
 
 # remove empty lines from csv
@@ -49,5 +46,10 @@ grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' "$ma
 
 if [ "$what_to_do" != "only_AdapterMappings_file" ]; then
   sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
+
+  # creates shrine_ont_act.ACT_META_MANUAL_MAPPING
+  sqlldr $USERNAME/$PASSWORD@$SID data=shrine_ACT_META_MANUAL_MAPPING.csv control=shrine_ACT_META_MANUAL_MAPPING.ctl
+
+  # consumes shrine_ont_act.ACT_META_MANUAL_MAPPING
   sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
 fi
