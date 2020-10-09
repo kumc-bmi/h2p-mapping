@@ -12,19 +12,15 @@ set -euxo pipefail
 mapping_input="Original_1to1_mapping.csv"
 mapping_output="AdapterMappings.csv"
 
-# copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
 # creates shrine_ont_act.ACT_MANUAL_MAPPING
-cp shrine_ACT_MANUAL_MAPPING_table.csv shrine_ACT_MANUAL_MAPPING_table.dat
-sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_MANUAL_MAPPING_table.ctl
+sqlldr $USERNAME/$PASSWORD@$SID data=shrine_ACT_MANUAL_MAPPING_table.csv control=shrine_ACT_MANUAL_MAPPING_table.ctl
 
 # create the AdapterMapping table
 # consumes shrine_ont_act.ACT_MANUAL_MAPPING
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_AdapterMapping_file.sql
 
-# copying as .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
 # creates shrine_ont_act.ACT_META_MANUAL_MAPPING
-cp shrine_ACT_META_MANUAL_MAPPING.csv shrine_ACT_META_MANUAL_MAPPING.dat
-sqlldr $USERNAME/$PASSWORD@$SID control=shrine_ACT_META_MANUAL_MAPPING.ctl
+sqlldr $USERNAME/$PASSWORD@$SID data=shrine_ACT_META_MANUAL_MAPPING.csv control=shrine_ACT_META_MANUAL_MAPPING.ctl
 
 # export AdapterMapping_file.  `AdapterMappings.csv` is created here!
 # consumes shrine_ont_act.ACT_META_MANUAL_MAPPING
