@@ -34,9 +34,6 @@ sed -i '/^\s*$/d' "$mapping_output"
 # TODO: Ask ACT commounity, is it ok to pulish Original_1to1_mapping.csv on github?
 grep -E '(ACT_DEMO|ACT_MED_ALPHA_2018|ACT_MED_VA_2018|ACT_PX_HCPCS_2018)' "$mapping_input" >> "$mapping_output"
 
-# remove covid diag (ICD10CM is being done by adapter mapping)
-grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' "$mapping_input" >> "$mapping_output"
-
 # the following are left out of the mapping_output csv
 #   ACT_PX_CPT_2018
 #   ACT_DX_ICD10_2018
