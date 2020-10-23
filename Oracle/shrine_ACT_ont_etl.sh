@@ -29,9 +29,8 @@ sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep
 # remove empty lines from csv
 sed -i '/^\s*$/d' "$mapping_output"
 
-# Followings are using metadata mapping approach
-# Original_1to1_mapping.csv will be added trough jenkins
-# TODO: Ask ACT commounity, is it ok to pulish Original_1to1_mapping.csv on github?
+# the following prefixes are mapped one-to-one in the `mapping_output` csv,
+#   as their terms are expected to resolve in the database
 grep -E '(ACT_DEMO|ACT_MED_ALPHA_2018|ACT_MED_VA_2018|ACT_PX_HCPCS_2018)' "$mapping_input" >> "$mapping_output"
 
 # the following are left out of the mapping_output csv
