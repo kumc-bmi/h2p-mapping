@@ -29,16 +29,11 @@ sqlplus -S $USERNAME/$PASSWORD@$SID @shrine_ACT_export_AdapterMapping.sql | grep
 # remove empty lines from csv
 sed -i '/^\s*$/d' "$mapping_output"
 
-# the following prefixes are mapped one-to-one in the `mapping_output` csv,
-#   as their terms are expected to resolve in the database
-grep -E '(ACT_DEMO|ACT_MED_ALPHA_2018|ACT_MED_VA_2018|ACT_PX_HCPCS_2018)' "$mapping_input" >> "$mapping_output"
-
-# the following are left out of the mapping_output csv
-#   ACT_PX_CPT_2018
-#   ACT_DX_ICD10_2018
-#   ACT_PX_ICD10_2018
-#   ACT_LAB_LOINC_2018
-#   ACT_VISIT
+# at this point, the output_csv should contain rows which we have manually addressed, or mappings which
+#   were produced above.  now we map everything else 1-to-1
+tmp_output_csv="$(mktemp)"
+cp "$mapping_output" "$tmp_output_csv"
+python csv_distinct_merge.py "$tmp_output_csv" "$mapping_input" > "$mapping_output"
 
 if [ "$what_to_do" != "only_AdapterMappings_file" ]; then
   sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
