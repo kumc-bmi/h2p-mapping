@@ -33,7 +33,7 @@ sed -i '/^\s*$/d' "$mapping_output"
 #   were produced above.  now we map everything else 1-to-1
 tmp_output_csv="$(mktemp)"
 cp "$mapping_output" "$tmp_output_csv"
-python csv_distinct_merge.py "$tmp_output_csv" "$mapping_input" > "$mapping_output"
+python3 csv_distinct_merge.py "$tmp_output_csv" "$mapping_input" > "$mapping_output"
 
 if [ "$what_to_do" != "only_AdapterMappings_file" ]; then
   sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
