@@ -155,8 +155,10 @@ select
 -- so, 164 + 2 childs = 166 (look ok)
 from output
 ;
+
+
 -------------------------------------------------------------------------------------------------------------------------------
---- COVID LABS CPT4
+--- COVID replace CPT4 with CPT
 -- 1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
 ------------------------------------------------------------------------------------------------------------------------------
 insert into blueheronmetadata.act_covid
@@ -195,7 +197,7 @@ where c_basecode like 'CPT:%'
 commit
 ;
 -------------------------------------------------------------------------------------------------------------------------------
---- COVID LABS HCPCS
+--- COVID procedures HCPCS
 --- same formate (no need to map, 0/2 avialbe in HERON) 
 ------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------
@@ -244,10 +246,12 @@ C_SYMBOL
 from blueheronmetadata.act_covid
 where c_basecode = 'LOINC:94310-0 NEGATIVE'
 ;
+
 DELETE
 from blueheronmetadata.act_covid
 where c_basecode = 'LOINC:94310-0 NEGATIVE'
 ;
+
 commit;
 insert into blueheronmetadata.act_covid
 select
