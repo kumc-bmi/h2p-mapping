@@ -5,6 +5,7 @@ define heron_data_schema=&2;
 -------------------------------------------------------------------------------
 whenever sqlerror continue;
 --select '||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
+drop table BLUEHERONMETADATA.ACT_COVID;
 drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA;
 -- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
 drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA;
@@ -22,6 +23,7 @@ drop table BLUEHERONMETADATA.NCATS_LABS;
 drop table BLUEHERONMETADATA.NCATS_VISIT_DETAILS;
 whenever sqlerror exit sql.sqlcode;
 
+create table BLUEHERONMETADATA.ACT_COVID as select * from SHRINE_ONT_ACT.ACT_COVID;
 --select '||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
 create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
 -- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
