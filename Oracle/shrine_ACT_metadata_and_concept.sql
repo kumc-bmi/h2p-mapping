@@ -477,4 +477,80 @@ WHEN MATCHED THEN UPDATE
 commit;
 --342,973 rows merged.
 
-exit;
+-- map clarity dx_ids to ACT ICD10
+INSERT INTO blueheronmetadata.act_covid
+    WITH icd10_dx_id_map AS (
+        SELECT
+            map10.code icd10,
+            map10.dx_id,
+            edg.dx_name
+        FROM
+            clarity.edg_current_icd10   map10
+            JOIN clarity.clarity_edg         edg ON map10.dx_id = edg.dx_id
+    )
+    SELECT
+--map10.*,
+        c_hlevel + 1 c_hlevel,
+        c_fullname
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_fullname,
+        map10.dx_name c_name,
+        c_synonym_cd,
+        c_visualattributes,
+        c_totalnum,
+        'KUH|DX_ID:' || map10.dx_id c_basecode,
+        c_metadataxml,
+        c_facttablecolumn,
+        c_tablename,
+        c_columnname,
+        c_columndatatype,
+        c_operator,
+        c_fullname
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_dimcode,
+        c_comment,
+        c_tooltip
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_tooltip,
+        m_applied_path,
+        update_date,
+        download_date,
+        import_date,
+        'ACT_ETL' sourcesystem_cd,
+        valuetype_cd,
+        m_exclusion_cd,
+        c_path,
+        c_symbol
+    FROM
+        shrine_ont_act.act_covid   meta
+        JOIN icd10_dx_id_map               map10 ON 'ICD10CM:' || map10.icd10 = meta.c_basecode;
+
+
+-- land act_covid concepts in concept_dimension
+INSERT INTO nightherondata.concept_dimension (
+    concept_cd,
+    concept_path,
+    name_char,
+    update_date,
+    download_date,
+    import_date,
+    sourcesystem_cd
+)
+    SELECT DISTINCT
+        ib.c_basecode,
+        ib.c_fullname,
+        ib.c_name,
+        update_date,
+        download_date,
+        SYSDATE,
+        'act_covid'
+    FROM
+        blueheronmetadata.act_covid ib
+    WHERE
+        ib.c_basecode IS NOT NULL;
+-- 5,896 rows inserted
+
+commit;
