@@ -9,10 +9,11 @@ log = logging.getLogger(__name__)
 
 
 def main(environ, sleep, Chrome,
-         executable_path="./chromedriver",
-         base="http://herondev:8080/shrine-api/shrine-webclient/"):
-    driver = Chrome(executable_path=executable_path, options=big_headless())
+         executable_path="./chromedriver"):
+    origin = environ['ACT_ORIGIN'] or 'http://herondev:8080'
+    base = f"{origin}/shrine-api/shrine-webclient/"
 
+    driver = Chrome(executable_path=executable_path, options=big_headless())
     try:
         login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
         query_list_by_name = find_flagged_queries(driver, sleep)
