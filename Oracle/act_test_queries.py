@@ -13,11 +13,14 @@ def main(environ, sleep, Chrome,
          base="http://herondev:8080/shrine-api/shrine-webclient/"):
     driver = Chrome(executable_path=executable_path, options=big_headless())
 
-    login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
-    query_list_by_name = find_flagged_queries(driver, sleep)
-    for i in query_list_by_name:
-        run_query(driver, sleep, i)
-    driver.close()
+    try:
+        login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
+        query_list_by_name = find_flagged_queries(driver, sleep)
+        for i in query_list_by_name:
+            run_query(driver, sleep, i)
+    finally:
+        driver.close()
+        driver.quit()
 
 
 def big_headless():
