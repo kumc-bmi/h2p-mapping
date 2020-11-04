@@ -135,8 +135,11 @@ if __name__ == '__main__':
 
         from selenium.webdriver import Chrome
 
-        logging.basicConfig(level=logging.INFO,
-                            stream=stderr)
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s %(levelname)s %(funcName)s: %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+            stream=stderr)
 
         main(environ, sleep, Chrome)
 
