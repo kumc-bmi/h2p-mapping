@@ -519,7 +519,7 @@ INSERT INTO blueheronmetadata.act_covid
         update_date,
         download_date,
         import_date,
-        'ACT_ETL' sourcesystem_cd,
+        'ACT' sourcesystem_cd,
         valuetype_cd,
         m_exclusion_cd,
         c_path,
