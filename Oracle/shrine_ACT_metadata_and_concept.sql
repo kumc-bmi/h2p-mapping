@@ -689,7 +689,7 @@ insert into blueheronmetadata.act_covid (
 );
 
 -- land act_covid concepts in concept_dimension
-INSERT INTO nightherondata.concept_dimension (
+insert into nightherondata.concept_dimension (
     concept_cd,
     concept_path,
     name_char,
@@ -698,18 +698,18 @@ INSERT INTO nightherondata.concept_dimension (
     import_date,
     sourcesystem_cd
 )
-    SELECT DISTINCT
+    select distinct
         ib.c_basecode,
         ib.c_fullname,
         ib.c_name,
         update_date,
         download_date,
-        SYSDATE,
-        'act_covid'
-    FROM
+        sysdate,
+        'ACT'
+    from
         blueheronmetadata.act_covid ib
-    WHERE
-        ib.c_basecode IS NOT NULL;
--- 5,896 rows inserted
+    where
+        ib.c_basecode is not null;
+-- 81,219 rows inserted
 
 commit;
