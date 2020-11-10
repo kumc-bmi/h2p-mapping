@@ -14,3 +14,4 @@ set -euxo pipefail
 : "$heron_data_schema"
 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
+sqlplus $USERNAME/$PASSWORD@$SID @procedure_ont_map.sql
