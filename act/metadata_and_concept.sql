@@ -6,13 +6,8 @@ define heron_data_schema=&2;
 whenever sqlerror continue;
 --select '||''''|| 'drop table BLUEHERONMETADATA.'||c_table_name ||''''|| ';' sql from SHRINE_ONT_ACT.table_access order by sql;
 drop table BLUEHERONMETADATA.ACT_COVID;
-drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA;
--- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
-drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA;
-drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA;
-drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA;
 drop table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA;
 -- Following tables are using metadata approach,but require changes.
 drop table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318;
@@ -25,13 +20,8 @@ whenever sqlerror exit sql.sqlcode;
 
 create table BLUEHERONMETADATA.ACT_COVID as select * from SHRINE_ONT_ACT.ACT_COVID;
 --select '||''''|| 'create table BLUEHERONMETADATA.'||c_table_name ||' as select * from SHRINE_ONT_ACT.'|| c_table_name ||''''||' ;' sql from SHRINE_ONT_ACT.table_access order by sql;
-create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
--- Following table ACT_HCPCS_PX_2018AA is using metadata approach,but does not require changes.
-create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA;
-create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA;
-create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA;
 create table BLUEHERONMETADATA.ACT_LOINC_LAB_2018AA as select * from SHRINE_ONT_ACT.ACT_LOINC_LAB_2018AA;
 -- Following tables are using metadata approach,but require changes.
 create table BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318 as select * from SHRINE_ONT_ACT.ACT_MED_ALPHA_V2_121318;
@@ -446,9 +436,6 @@ from BLUEHERONMETADATA.ACT_MED_VA_V2_092818
 union all
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
 from BLUEHERONMETADATA.ACT_MED_ALPHA_V2_121318
-union all
-select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
-from BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA
 ) ib
 where ib.c_basecode is not null
 group by ib.c_basecode, ib.c_fullname
