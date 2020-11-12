@@ -8,25 +8,31 @@ from selenium.webdriver import ChromeOptions
 log = logging.getLogger(__name__)
 
 
-def main(environ, sleep, Chrome,
+def main(argv, environ, sleep, Chrome,
          executable_path="./chromedriver"):
     origin = environ['ACT_ORIGIN'] or 'http://herondev:8080'
     base = f"{origin}/shrine-api/shrine-webclient/"
 
-    driver = Chrome(executable_path=executable_path, options=big_headless())
+    driver = Chrome(executable_path=executable_path,
+                    options=big_headless('--visible' not in argv))
+    only = argv[argv.index('--only') + 1] if '--only' in argv else None
     try:
         login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
         query_list_by_name = find_flagged_queries(driver, sleep)
         for i in query_list_by_name:
+            if only and only not in i:
+                log.warn('only running %s; skip %s', only, i)
+                continue
             run_query(driver, sleep, i)
     finally:
         driver.close()
         driver.quit()
 
 
-def big_headless():
+def big_headless(invisible=True):
     chrome_options = ChromeOptions()
-    chrome_options.add_argument('--headless')
+    if invisible:
+        chrome_options.add_argument('--headless')
     # window size matters:
     # `Other element would receive the click: <div class="py-3 Footer"></div>`
     chrome_options.add_argument('--window-size=1920,1080')
@@ -131,7 +137,7 @@ if __name__ == '__main__':
     def _script_io():
         from os import environ
         from time import sleep
-        from sys import stderr
+        from sys import argv, stderr
 
         from selenium.webdriver import Chrome
 
@@ -141,6 +147,6 @@ if __name__ == '__main__':
             datefmt='%Y-%m-%d %H:%M:%S',
             stream=stderr)
 
-        main(environ, sleep, Chrome)
+        main(argv[:], environ, sleep, Chrome)
 
     _script_io()
