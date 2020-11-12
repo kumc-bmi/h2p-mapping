@@ -673,6 +673,7 @@ insert into blueheronmetadata.act_covid (
 );
 
 -- land act_covid concepts in concept_dimension
+delete from nightherondata.concept_dimension where sourcesystem_cd like 'ACT' ;
 insert into nightherondata.concept_dimension (
     concept_cd,
     concept_path,
