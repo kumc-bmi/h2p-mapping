@@ -1,14 +1,25 @@
 -- diagnosis_mapping.sql
+/*
+TOOD: 
+2019-nCoV acute respiratory disease (ICD10CM:U07.1)
+;
+
+select * from "&&metadata_schema".act_covid
+where c_basecode like '%U%'
+--and c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
+and c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947183016\ICD10CM_U07.1%'
+;
+*/
 set echo on;
-define metadata_schema=&2;
---define metadata_schema=BLUEHERONMETADATA;
+--define metadata_schema=&2;
+define metadata_schema=BLUEHERONMETADATA;
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT COVID-19
 ---------------- C_TABLE_NAME : ACT_COVID
 ---------------- C_TABLE_CD   : ACT_COVID_V1
 ---------------- subtree      : mapping apply to sub  tree of ACT Phenotype\COVID-19 Related Terms\Diagnosis
 -------------------------------------------------------------------------------
-insert into "&&metadata_schema".act_covid
+insert /*+  APPEND */ into "&&metadata_schema".act_covid
 with icd10_dx_id_map
 as
 (
@@ -62,7 +73,7 @@ commit
 ---------------- C_TABLE_CD   : ACT_DX_ICD10_2018
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
-insert into "&&metadata_schema".ACT_ICD10CM_DX_2018AA
+insert /*+  APPEND */ into "&&metadata_schema".ACT_ICD10CM_DX_2018AA
 with icd10_dx_id_map
 as
 (
@@ -115,7 +126,7 @@ commit
 ---------------- C_TABLE_CD   : ACT_DX_ICD9_2018
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
-insert into "&&metadata_schema".ACT_ICD9CM_DX_2018AA
+insert /*+  APPEND */ into "&&metadata_schema".ACT_ICD9CM_DX_2018AA
 with icd9_dx_id_map
 as
 (
@@ -167,7 +178,7 @@ commit
 ---------------- C_TABLE_CD   : ACT_DX_10_9
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
-insert into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
+insert /*+  APPEND */ into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
 with icd9_dx_id_map
 as
 (
@@ -213,7 +224,7 @@ on 'ICD9CM:'||map9.icd9 = meta.c_basecode
 -- 51,439,100 rows inserted.
 commit;
 --------------------------------------------------------------------------------------------------------------------------
-insert into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
+insert /*+  APPEND */ into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
 with icd10_dx_id_map
 as
 (

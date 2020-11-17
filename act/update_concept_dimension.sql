@@ -19,9 +19,10 @@ DELETE  /*+  PARALLEL (20) */ FROM
 where SOURCESYSTEM_CD in ('NCATS', 'ACT_ETL')
 	and upload_id='&&upload_id'
 ;
-
-
-insert  /*+  PARALLEL APPEND */ into "&&heron_data_schema".concept_dimension(
+commit
+;
+alter table "&&heron_data_schema".concept_dimension nologging;
+insert  /*+  APPEND */ into "&&heron_data_schema".concept_dimension(
   concept_cd, 
   concept_path, 
   name_char,
