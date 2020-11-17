@@ -8,7 +8,7 @@ define shrine_ont_schema=SHRINE_ONT_ACT;
 -- DROP and Create metadata.ont tables
 -------------------------------------------------------------------------------
 -- SQL statements to drop table:
--- select  'drop table "&&metadata_schema".'||c_table_name || 'purge ;' sql from "&&shrine_ont_schema".table_access order by sql;
+-- sql generator: select  'drop table "&&metadata_schema".'||c_table_name || 'purge ;' sql from "&&shrine_ont_schema".table_access order by sql;
 whenever sqlerror continue
 ;
 drop table "&&metadata_schema".ACT_COVID purge;
@@ -29,7 +29,7 @@ drop table "&&metadata_schema".NCATS_VISIT_DETAILS purge;
 whenever sqlerror exit sql.sqlcode
 ;
 -- SQL statements to create table: 
--- select ''''|| 'create table "&&metadata_schema".'||c_table_name ||' nologging as select * from "&&shrine_ont_schema".'|| c_table_name ||' ;' sql from "&&shrine_ont_schema".table_access order by sql;
+-- sql generator: select ''''|| 'create table "&&metadata_schema".'||c_table_name ||' nologging as select * from "&&shrine_ont_schema".'|| c_table_name ||' ;' sql from "&&shrine_ont_schema".table_access order by sql;
 create table "&&metadata_schema".ACT_COVID  nologging as select * from "&&shrine_ont_schema".ACT_COVID ;
 create table "&&metadata_schema".ACT_CPT_PX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_CPT_PX_2018AA ;
 create table "&&metadata_schema".ACT_HCPCS_PX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_HCPCS_PX_2018AA ;
