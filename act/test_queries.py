@@ -140,6 +140,7 @@ if __name__ == '__main__':
         from sys import argv, stderr
 
         from selenium.webdriver import Chrome
+        from chromedriver_binary import chromedriver_filename
 
         logging.basicConfig(
             level=logging.INFO,
@@ -147,6 +148,7 @@ if __name__ == '__main__':
             datefmt='%Y-%m-%d %H:%M:%S',
             stream=stderr)
 
-        main(argv[:], environ, sleep, Chrome)
+        main(argv[:], environ, sleep, Chrome,
+             executable_path=chromedriver_filename)
 
     _script_io()
