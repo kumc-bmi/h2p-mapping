@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 def main(argv, environ, sleep, Chrome,
          executable_path="./chromedriver"):
-    origin = environ['ACT_ORIGIN'] or 'http://herondev:8080'
+    origin = environ.get('ACT_ORIGIN') or 'http://herondev:8080'
     base = f"{origin}/shrine-api/shrine-webclient/"
 
     driver = Chrome(executable_path=executable_path,
