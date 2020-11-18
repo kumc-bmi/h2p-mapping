@@ -47,6 +47,7 @@ def main(argv, environ, sleep, Chrome):
                                          environ.get('PATH')))
     driver.implicitly_wait(2)
     only = argv[argv.index('--only') + 1] if '--only' in argv else None
+    failures = []
     try:
         login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
         query_list_by_name = find_flagged_queries(driver, sleep)
@@ -54,7 +55,12 @@ def main(argv, environ, sleep, Chrome):
             if only and only not in i:
                 log.warn('only running %s; skip %s', only, i)
                 continue
-            run_query(driver, sleep, i)
+            ok = run_query(driver, sleep, i)
+            if not ok:
+                failures.append(i)
+        if failures:
+            log.error('failures: %s', failures)
+            raise SystemExit(1)
     finally:
         driver.close()
         driver.quit()
@@ -152,6 +158,7 @@ def run_query(driver, sleep, i):
     # run query
     by_css('*.startQueryFormRight button').click()
     # get results
+    ok = False
     for attempt in range(60):
         try:
             try:
@@ -162,15 +169,17 @@ def run_query(driver, sleep, i):
                     "//div[@class='SiteError']").text
             if result in ('10 patients or fewer',
                           'Site Error click for details'):
-                log.info(i + " result: " + highlight(result))
+                log.error(i + " result: " + highlight(result))
             else:
+                ok = True
                 log.info(i + " result: " + result)
         except Exception:
             sleep(1)
             continue
         break
     else:
-        log.info("Query " + i + " " + highlight("failed to execute"))
+        log.error("Query " + i + " " + highlight("failed to execute"))
+    return ok
 
 
 def highlight(txt):
