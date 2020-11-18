@@ -40,7 +40,8 @@ def main(argv, environ, sleep, Chrome,
     base = f"{origin}/shrine-api/shrine-webclient/"
 
     driver = Chrome(executable_path=executable_path,
-                    options=big_headless('--visible' not in argv))
+                    options=big_headless('--visible' not in argv,
+                                         environ.get('PATH')))
     only = argv[argv.index('--only') + 1] if '--only' in argv else None
     try:
         login(driver, sleep, base, environ['ACT_USER'], environ['ACT_PASS'])
@@ -55,10 +56,16 @@ def main(argv, environ, sleep, Chrome,
         driver.quit()
 
 
-def big_headless(invisible=True):
+def big_headless(invisible=True, PATH=None):
     chrome_options = ChromeOptions()
     if invisible:
         chrome_options.add_argument('--headless')
+    if PATH:
+        for dirname in PATH.split(':'):
+            if 'chrome' in dirname:
+                binary = f'{dirname}/chrome'
+                chrome_options.binary_location = binary
+                break
     # window size matters:
     # `Other element would receive the click: <div class="py-3 Footer"></div>`
     chrome_options.add_argument('--window-size=1920,1080')
