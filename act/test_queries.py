@@ -58,6 +58,10 @@ def main(argv, environ, sleep, Chrome):
 
 def big_headless(invisible=True, PATH=None):
     chrome_options = ChromeOptions()
+    # --no-sandbox seems to be necessary in Docker
+    # cf https://github.com/joyzoursky/docker-python-chromedriver/blob/master/test_script.py # noqa
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-gpu')
     if invisible:
         chrome_options.add_argument('--headless')
     # window size matters:
