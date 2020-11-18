@@ -1,4 +1,30 @@
 #!/usr/bin/python3
+"""test_queries -- run flagged SHRINE queries using a headless browser
+
+Installation / Configuration
+----------------------------
+
+  1. start SHRINE client (for example,
+     as from https://github.com/kumc-bmi/shrine-docker-image )
+     - start i2b2 with star schema, metadata if necessary
+  2. export ACT_ORIGIN to match
+  3. run some SHRINE queries
+  4. flag some of them in the SHRINE UI
+  5. set ACT_USER ACT_PASS to grant this test tool access to log in.
+  6. pip install selenium python-chromedriver-binary
+     - install chrome / chromium, if necessary
+
+Usage
+-----
+
+$ python act_test_queries.py
+11:44:59 INFO login: Logging in...
+11:45:01 INFO find_flagged_queries: Searching for flagged queries...
+11:45:07 INFO find_flagged_queries: Found query: 0-9 years old@17:16:35
+11:45:24 INFO run_query: Selecting 0-9 years old@17:16:35
+11:45:25 INFO run_query: Running 0-9 years old@17:16:35
+11:45:31 INFO run_query: 0-9 years old@17:16:35 result: 5,170 ± 10 patients
+"""
 
 import logging
 
