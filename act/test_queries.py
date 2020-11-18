@@ -11,8 +11,8 @@ Installation / Configuration
   3. run some SHRINE queries
   4. flag some of them in the SHRINE UI
   5. set ACT_USER ACT_PASS to grant this test tool access to log in.
-  6. pip install selenium python-chromedriver-binary
-     - install chrome / chromium, if necessary
+  6. pip install selenium
+     - install chromedriver, chrome / chromium, if necessary
 
 Usage
 -----
@@ -34,11 +34,11 @@ from selenium.webdriver import ChromeOptions
 log = logging.getLogger(__name__)
 
 
-def main(argv, environ, sleep, Chrome,
-         executable_path="./chromedriver"):
+def main(argv, environ, sleep, Chrome):
     origin = environ.get('ACT_ORIGIN') or 'http://herondev:8080'
     base = f"{origin}/shrine-api/shrine-webclient/"
 
+    executable_path = environ.get('CHROMEDRIVER') or '/usr/bin/chromedriver'
     driver = Chrome(executable_path=executable_path,
                     options=big_headless('--visible' not in argv,
                                          environ.get('PATH')))
@@ -60,12 +60,6 @@ def big_headless(invisible=True, PATH=None):
     chrome_options = ChromeOptions()
     if invisible:
         chrome_options.add_argument('--headless')
-    if PATH:
-        for dirname in PATH.split(':'):
-            if 'chrome' in dirname:
-                binary = f'{dirname}/chrome'
-                chrome_options.binary_location = binary
-                break
     # window size matters:
     # `Other element would receive the click: <div class="py-3 Footer"></div>`
     chrome_options.add_argument('--window-size=1920,1080')
@@ -173,7 +167,6 @@ if __name__ == '__main__':
         from sys import argv, stderr
 
         from selenium.webdriver import Chrome
-        from chromedriver_binary import chromedriver_filename
 
         logging.basicConfig(
             level=logging.INFO,
@@ -181,7 +174,6 @@ if __name__ == '__main__':
             datefmt='%Y-%m-%d %H:%M:%S',
             stream=stderr)
 
-        main(argv[:], environ, sleep, Chrome,
-             executable_path=chromedriver_filename)
+        main(argv[:], environ, sleep, Chrome)
 
     _script_io()
