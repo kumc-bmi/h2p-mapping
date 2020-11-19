@@ -48,7 +48,7 @@ select
   '&&upload_id' upload_id
 from 
 (
--- sql generator: select  'select C_BASECODE, C_FULLNAME, C_NAME, UPDATE_DATE, DOWNLOAD_DATE, sourcesystem_cd, C_DIMCODE from "&&metadata_schema".' ||c_table_name ||' union all'  sql from shrine_ont_act.table_access order by sql;
+-- sql generator: select  'select C_BASECODE, C_FULLNAME, C_NAME, UPDATE_DATE, DOWNLOAD_DATE, sourcesystem_cd, C_DIMCODE from "&&metadata_schema".' ||c_table_name ||' union all'  sql from shrine_ont_act.table_access order by sql
 select C_BASECODE, C_FULLNAME, C_NAME, UPDATE_DATE, DOWNLOAD_DATE, sourcesystem_cd, C_DIMCODE from "&&metadata_schema".ACT_COVID union all
 select C_BASECODE, C_FULLNAME, C_NAME, UPDATE_DATE, DOWNLOAD_DATE, sourcesystem_cd, C_DIMCODE from "&&metadata_schema".ACT_CPT_PX_2018AA union all
 select C_BASECODE, C_FULLNAME, C_NAME, UPDATE_DATE, DOWNLOAD_DATE, sourcesystem_cd, C_DIMCODE from "&&metadata_schema".ACT_HCPCS_PX_2018AA union all
