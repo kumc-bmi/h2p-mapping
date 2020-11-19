@@ -7,11 +7,12 @@ act_shrine_ontology_mapping: status/concept_dimension status/table_access
 
 # Make a directory for status, i.e. completion times
 # Then as each script finishes, touch a corresponding file.
-status:
-	mkdir -p $@
+status/README:
+	mkdir -p status
+	echo "These files represent completion status of SQL scripts." >$@
 
 # TODO: migrate this code to per-domain scripts
-status/tables: status
+status/tables: status/README
 	sqlplus $(ACCOUNT) @create_metadata_tables_from_shrine_ont.sql \
 		$(metadata_schema) $(shrine_ont_schema)
 	touch $@
@@ -28,7 +29,7 @@ status/procedures: status/tables
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
 
 # TODO: clarify what's going on here or move contents of this script elsewhere.
-status/misc:
+status/misc: status/tables
 	sqlplus $(ACCOUNT) @metadata_and_concept.sql $(upload_id) \
 		$(heron_data_schema) $(shrine_ont_schema)
 
