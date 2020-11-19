@@ -24,13 +24,14 @@ grep ACT_MED_ALPHA_2018 Original_1to1_mapping.csv >>original
 grep ACT_MED_VA_2018 Original_1to1_mapping.csv >>original
 grep ACT_PX_HCPCS_2018 Original_1to1_mapping.csv >>original
 grep ACT_DEMO Original_1to1_mapping.csv >>original
-
+grep ACT_DX_10_9 Original_1to1_mapping.csv >>original
+grep ACT_DX_ICD10_2018 Original_1to1_mapping.csv >>original
+grep ACT_DX_ICD9_2018 Original_1to1_mapping.csv >>original
 # covid diag (ICD10CM is being done by adapter mapping)
-grep -Fv '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' Original_1to1_mapping.csv >>original
+grep '\\ACT_COVID_V1\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088' Original_1to1_mapping.csv >>original
 
 # Followings are using Adapter Mapping  approach
 #grep  ACT_PX_CPT_2018     Original_1to1_mapping.csv >> original
-#grep  ACT_DX_ICD10_2018   Original_1to1_mapping.csv >> original
 #grep  ACT_PX_ICD10_2018   Original_1to1_mapping.csv >> original
 #grep  ACT_LAB_LOINC_2018  Original_1to1_mapping.csv >> original
 #grep  ACT_VISIT           Original_1to1_mapping.csv >> original
@@ -43,5 +44,6 @@ if [ "$what_to_do" == "only_AdapterMappings_file" ]; then
 fi
 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_onto_index.sql
+sqlplus $USERNAME/$PASSWORD@$SID @diagnosis_mapping.sql $metadata_schema
 
 sqlplus $USERNAME/$PASSWORD@$SID @shrine_ACT_metadata_and_concept.sql $upload_id $heron_data_schema
