@@ -1,5 +1,6 @@
 -- diagnosis_mapping.sql
 set echo on;
+select * from global_name;
 define metadata_schema=&1;
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT COVID-19
