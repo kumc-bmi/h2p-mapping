@@ -11,39 +11,17 @@ status/README:
 	mkdir -p status
 	echo "These files represent completion status of SQL scripts." >$@
 
-# TODO: migrate this code to per-domain scripts
-status/tables: status/README
-	sqlplus $(ACCOUNT) @create_metadata_tables_from_shrine_ont.sql \
-		$(metadata_schema) $(shrine_ont_schema)
-	touch $@
-
-status/demographics: status/tables
+status/demographics: status/README
 	sqlplus $(ACCOUNT) @demographics_mapping.sql $(metadata_schema)
 	touch $@
 
-status/diagnosis: status/tables
+status/diagnosis: status/README
 	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema)
 	touch $@
 
-status/procedures: status/tables
+status/procedures: status/README
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
 
-# TODO: clarify what's going on here or move contents of this script elsewhere.
-status/misc: status/tables
-	sqlplus $(ACCOUNT) @metadata_and_concept.sql $(upload_id) \
-		$(heron_data_schema) $(shrine_ont_schema)
-
-# Ensure concepts from all dimensions are in the concept dimension.
-# TODO: migrate this code to per-domain scripts?
-status/concept_dimension: status/diagnosis status/demographics status/procedures status/misc
-	sqlplus $(ACCOUNT) @update_concept_dimension.sql $(upload_id) \
-		$(heron_data_schema) $(metadata_schema)
-
-# TODO: migrate this code to per-domain scripts
 status/table_access:
 	sqlplus $(ACCOUNT) @update_table_access.sql $metadata_schema
 	touch $@
-
-
-# procedures_done_idea:
-#	touch $@ --date (sql "select max(modified) from procedures")
