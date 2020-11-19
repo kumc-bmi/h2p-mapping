@@ -216,5 +216,34 @@ on 'ICD10CM:'||map10.icd10 = meta.c_basecode
 --1,662,760 rows inserted
 commit
 ;
+
+
+delete from nightherondata.concept_dimension
+where concept_path like '\ACT\Diagnosis\%';
+
+insert into nightherondata.concept_dimension(
+  concept_cd,
+  concept_path,
+  name_char,
+  update_date,
+  download_date,
+  import_date,
+  sourcesystem_cd
+  )
+select distinct
+  ib.c_basecode,
+  ib.c_fullname,
+  ib.c_name,
+  update_date,
+  download_date,
+  sysdate,
+  'ACT'
+from (
+ select * from blueheronmetadata.ACT_ICD10CM_DX_2018AA union all
+ select * from blueheronmetadata.ACT_ICD9CM_DX_2018AA
+) ib
+where ib.c_basecode is not null
+;
+
 exit
 ;

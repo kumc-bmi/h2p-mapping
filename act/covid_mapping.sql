@@ -64,3 +64,29 @@ where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
 ;
 commit
 ;
+
+delete from nightherondata.concept_dimension
+where concept_path like '\ACT\UMLS_C0031437\SNOMED_3947185011\%';
+
+insert into nightherondata.concept_dimension(
+  concept_cd,
+  concept_path,
+  name_char,
+  update_date,
+  download_date,
+  import_date,
+  sourcesystem_cd
+  )
+select distinct
+  ib.c_basecode,
+  ib.c_fullname,
+  ib.c_name,
+  update_date,
+  download_date,
+  sysdate,
+  'ACT'
+from (
+ select * from blueheronmetadata.ACT_COVID
+) ib
+where ib.c_basecode is not null
+;

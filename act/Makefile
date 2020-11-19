@@ -3,7 +3,7 @@
 # Database SID, login credentials are provided in the environment.
 ACCOUNT=$(USERNAME)/$(PASSWORD)@$(SID)
 
-act_shrine_ontology_mapping: status/concept_dimension status/table_access
+act_shrine_ontology_mapping: status/table_access
 
 # Make a directory for status, i.e. completion times
 # Then as each script finishes, touch a corresponding file.
@@ -22,6 +22,6 @@ status/diagnosis: status/README
 status/procedures: status/README
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
 
-status/table_access:
+status/table_access: status/demographics status/diagnosis status/procedures
 	sqlplus $(ACCOUNT) @update_table_access.sql $metadata_schema
 	touch $@
