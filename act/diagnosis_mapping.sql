@@ -1,6 +1,17 @@
 -- diagnosis_mapping.sql
 set echo on;
 define metadata_schema=&1;
+
+whenever sqlerror continue
+;
+drop table "&&metadata_schema".ACT_ICD10CM_DX_2018AA purge;
+drop table "&&metadata_schema".ACT_ICD9CM_DX_2018AA purge;
+whenever sqlerror exit sql.sqlcode
+;
+create table "&&metadata_schema".ACT_ICD10CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD10CM_DX_2018AA ;
+create table "&&metadata_schema".ACT_ICD9CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD9CM_DX_2018AA ;
+
+
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT Diagnoses ICD-10
 ---------------- C_TABLE_NAME : ACT_ICD10CM_DX_2018AA

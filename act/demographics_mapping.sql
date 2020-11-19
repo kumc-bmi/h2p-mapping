@@ -1,5 +1,13 @@
 set echo on;
-define metadata_schema=&3;
+define metadata_schema=&1;
+define shrine_ont_schema=&2;
+
+whenever sqlerror continue
+;
+drop table "&&metadata_schema".NCATS_DEMOGRAPHICS purge;
+whenever sqlerror exit sql.sqlcode
+;
+
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT Demographics
 ---------------- C_TABLE_NAME : NCATS_DEMOGRAPHICS

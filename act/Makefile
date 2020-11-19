@@ -12,11 +12,11 @@ status/README:
 	echo "These files represent completion status of SQL scripts." >$@
 
 status/demographics: status/README
-	sqlplus $(ACCOUNT) @demographics_mapping.sql $(metadata_schema)
+	sqlplus $(ACCOUNT) @demographics_mapping.sql $(metadata_schema) $(shrine_ont_schema)
 	touch $@
 
 status/diagnosis: status/README
-	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema)
+	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema) $(shrine_ont_schema)
 	touch $@
 
 status/procedures: status/README

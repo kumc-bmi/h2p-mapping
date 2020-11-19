@@ -1,5 +1,15 @@
 set echo on;
 define metadata_schema=&1;
+define shrine_ont_schema=&2;
+
+-- sql generator: select  'drop table "&&metadata_schema".'||c_table_name || 'purge ;' sql from "&&shrine_ont_schema".table_access order by sql;
+whenever sqlerror continue
+;
+drop table "&&metadata_schema".ACT_COVID purge;
+whenever sqlerror exit sql.sqlcode
+;
+create table "&&metadata_schema".ACT_COVID  nologging as select * from "&&shrine_ont_schema".ACT_COVID ;
+
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT COVID-19
 ---------------- C_TABLE_NAME : ACT_COVID
