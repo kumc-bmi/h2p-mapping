@@ -1,9 +1,7 @@
 -- create_1to1_metadata_tables.sql
 set echo on;
---define metadata_schema=&2;
---define shrine_ont_schema=&3;
-define metadata_schema=BLUEHERONMETADATA;
-define shrine_ont_schema=SHRINE_ONT_ACT;
+define metadata_schema=&1;
+define shrine_ont_schema=&2;
 -------------------------------------------------------------------------------
 -- DROP and Create metadata.ont tables
 -------------------------------------------------------------------------------

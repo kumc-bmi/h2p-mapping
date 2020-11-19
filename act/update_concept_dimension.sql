@@ -3,9 +3,6 @@ set echo on;
 define upload_id=&1;
 define heron_data_schema=&2;
 define metadata_schema=&3;
---define upload_id=987654321;
---define heron_data_schema=NIGHTHERONDATA;
---define metadata_schema=BLUEHERONMETADATA;
 -------------------------------------------------------------------------------
 -- CONCEPT_DIMENSION
 -------------------------------------------------------------------------------

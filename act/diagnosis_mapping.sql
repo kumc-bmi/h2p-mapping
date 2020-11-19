@@ -1,18 +1,6 @@
 -- diagnosis_mapping.sql
-/*
-TOOD: 
-2019-nCoV acute respiratory disease (ICD10CM:U07.1)
-;
-
-select * from "&&metadata_schema".act_covid
-where c_basecode like '%U%'
---and c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
-and c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\SNOMED_3947183016\ICD10CM_U07.1%'
-;
-*/
 set echo on;
---define metadata_schema=&2;
-define metadata_schema=BLUEHERONMETADATA;
+define metadata_schema=&1;
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT COVID-19
 ---------------- C_TABLE_NAME : ACT_COVID
