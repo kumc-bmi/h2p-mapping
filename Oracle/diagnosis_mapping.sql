@@ -2,6 +2,15 @@
 set echo on;
 select * from global_name;
 define metadata_schema=&1;
+whenever sqlerror continue;
+drop table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA;
+drop table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA;
+drop table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1;
+whenever sqlerror exit sql.sqlcode;
+
+create table BLUEHERONMETADATA.ACT_ICD10CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10CM_DX_2018AA;
+create table BLUEHERONMETADATA.ACT_ICD9CM_DX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_DX_2018AA;
+create table BLUEHERONMETADATA.NCATS_ICD10_ICD9_DX_V1 as select * from SHRINE_ONT_ACT.NCATS_ICD10_ICD9_DX_V1;
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT COVID-19
 ---------------- C_TABLE_NAME : ACT_COVID
