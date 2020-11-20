@@ -1,6 +1,7 @@
 -- diagnosis_mapping.sql
 set echo on;
 define metadata_schema=&1;
+define shrine_ont_schema=&2;
 
 whenever sqlerror continue
 ;
