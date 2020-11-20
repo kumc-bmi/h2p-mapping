@@ -11,9 +11,17 @@ status/README:
 	mkdir -p status
 	echo "These files represent completion status of SQL scripts." >$@
 
-status/demographics: status/README
+status/demographics: status/meta_manual_mapping
 	sqlplus $(ACCOUNT) @demographics_mapping.sql $(metadata_schema) $(shrine_ont_schema)
 	touch $@
+
+status/meta_manual_mapping: status/README META_MANUAL_MAPPING.dat META_MANUAL_MAPPING.ctl
+	sqlldr $(ACCOUNT) control=META_MANUAL_MAPPING.ctl
+	touch $@
+
+# link .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
+META_MANUAL_MAPPING.dat: META_MANUAL_MAPPING.csv
+	ln -s $< $@
 
 status/diagnosis: status/README
 	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema) $(shrine_ont_schema)
@@ -21,7 +29,8 @@ status/diagnosis: status/README
 
 status/procedures: status/README
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
+	touch $@
 
 status/table_access: status/demographics status/diagnosis status/procedures
-	sqlplus $(ACCOUNT) @update_table_access.sql $metadata_schema
+	sqlplus $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
