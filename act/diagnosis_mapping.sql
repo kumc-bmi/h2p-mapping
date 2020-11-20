@@ -26,7 +26,6 @@ SELECT
 map10.code icd10,
 map10.dx_id,
 edg.dx_name
-
 FROM
 clarity.edg_current_icd10 map10
 JOIN clarity.clarity_edg edg ON map10.dx_id = edg.dx_id
@@ -177,7 +176,6 @@ SELECT
 map10.code icd10,
 map10.dx_id,
 edg.dx_name
-
 FROM
 clarity.edg_current_icd10 map10
 JOIN clarity.clarity_edg edg ON map10.dx_id = edg.dx_id
