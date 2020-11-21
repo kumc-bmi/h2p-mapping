@@ -246,3 +246,53 @@ where ib.c_basecode is not null
 
 exit
 ;
+
+-- generate SQL code for indexes. ISSUE: use stored procedures instead?
+create or replace view act_dx_ix_code_gen as
+with ix_cols as (
+  select 'C_FULLNAME' acol, 'unique' arity from dual union all
+  select 'M_EXCLUSION_CD', '' from dual union all
+  select 'M_APPLIED_PATH', '' from dual union all
+  select 'C_HLEVEL', '' from dual
+), ea as (
+  select c_table_cd, c_table_name
+  from shrine_ont_act.table_access
+  where c_table_name like '%_DX_%'
+), mk_ix as (
+  select lower('create ' || arity || ' index ' || c_table_cd || '_' || acol || ' on ' || c_table_name || '(' || acol || ') parallel 4;') sql
+  from ix_cols cross join ea
+), rm_ix as (
+  select lower('drop index ' || c_table_cd || '_' || acol || ';') sql
+  from ix_cols cross join ea
+)
+select * from rm_ix union all select * from mk_ix;
+-- select * from act_dx_ix_code_gen;
+
+alter session set current_schema=&&metadata_schema;
+
+whenever sqlerror continue;
+drop index act_dx_icd10_2018_c_fullname;
+drop index act_dx_icd10_2018_m_exclusion_cd;
+drop index act_dx_icd10_2018_m_applied_path;
+drop index act_dx_icd10_2018_c_hlevel;
+drop index act_dx_icd9_2018_c_fullname;
+drop index act_dx_icd9_2018_m_exclusion_cd;
+drop index act_dx_icd9_2018_m_applied_path;
+drop index act_dx_icd9_2018_c_hlevel;
+drop index act_dx_10_9_c_fullname;
+drop index act_dx_10_9_m_exclusion_cd;
+drop index act_dx_10_9_m_applied_path;
+drop index act_dx_10_9_c_hlevel;
+whenever sqlerror exit sql.sqlcode;
+create unique index act_dx_icd10_2018_c_fullname on act_icd10cm_dx_2018aa(c_fullname) parallel 4;
+create  index act_dx_icd10_2018_m_exclusion_cd on act_icd10cm_dx_2018aa(m_exclusion_cd) parallel 4;
+create  index act_dx_icd10_2018_m_applied_path on act_icd10cm_dx_2018aa(m_applied_path) parallel 4;
+create  index act_dx_icd10_2018_c_hlevel on act_icd10cm_dx_2018aa(c_hlevel) parallel 4;
+create unique index act_dx_icd9_2018_c_fullname on act_icd9cm_dx_2018aa(c_fullname) parallel 4;
+create  index act_dx_icd9_2018_m_exclusion_cd on act_icd9cm_dx_2018aa(m_exclusion_cd) parallel 4;
+create  index act_dx_icd9_2018_m_applied_path on act_icd9cm_dx_2018aa(m_applied_path) parallel 4;
+create  index act_dx_icd9_2018_c_hlevel on act_icd9cm_dx_2018aa(c_hlevel) parallel 4;
+create unique index act_dx_10_9_c_fullname on ncats_icd10_icd9_dx_v1(c_fullname) parallel 4;
+create  index act_dx_10_9_m_exclusion_cd on ncats_icd10_icd9_dx_v1(m_exclusion_cd) parallel 4;
+create  index act_dx_10_9_m_applied_path on ncats_icd10_icd9_dx_v1(m_applied_path) parallel 4;
+create  index act_dx_10_9_c_hlevel on ncats_icd10_icd9_dx_v1(c_hlevel) parallel 4;
