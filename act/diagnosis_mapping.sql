@@ -7,10 +7,12 @@ whenever sqlerror continue
 ;
 drop table "&&metadata_schema".ACT_ICD10CM_DX_2018AA purge;
 drop table "&&metadata_schema".ACT_ICD9CM_DX_2018AA purge;
+drop table "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1 purge;
 whenever sqlerror exit sql.sqlcode
 ;
 create table "&&metadata_schema".ACT_ICD10CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD10CM_DX_2018AA ;
 create table "&&metadata_schema".ACT_ICD9CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD9CM_DX_2018AA ;
+create table "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1  nologging as select * from "&&shrine_ont_schema".NCATS_ICD10_ICD9_DX_V1 ;
 
 
 ------------------------------------------------------------------------------
