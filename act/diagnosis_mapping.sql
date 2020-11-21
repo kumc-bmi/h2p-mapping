@@ -8,12 +8,33 @@ whenever sqlerror continue
 drop table "&&metadata_schema".ACT_ICD10CM_DX_2018AA purge;
 drop table "&&metadata_schema".ACT_ICD9CM_DX_2018AA purge;
 drop table "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1 purge;
+drop table icd_to_dx_id;
 whenever sqlerror exit sql.sqlcode
 ;
+
 create table "&&metadata_schema".ACT_ICD10CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD10CM_DX_2018AA ;
 create table "&&metadata_schema".ACT_ICD9CM_DX_2018AA  nologging as select * from "&&shrine_ont_schema".ACT_ICD9CM_DX_2018AA ;
 create table "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1  nologging as select * from "&&shrine_ont_schema".NCATS_ICD10_ICD9_DX_V1 ;
 
+
+create table icd_to_dx_id (
+  std, std_code, parent_code, path_seg, child_code, dx_id, dx_name
+  , primary key(parent_code, child_code)
+) compress nologging as
+select distinct 'ICD10' std, map10.code std_code
+     , 'ICD10CM:' || map10.code parent_code
+     , 'kuh_dx_id_' || edg.dx_id || '\' path_seg
+     , 'KUH|DX_ID:' || edg.dx_id child_code, edg.dx_id, edg.dx_name
+from clarity.edg_current_icd10 map10
+join clarity.clarity_edg edg on map10.dx_id = edg.dx_id
+union all
+select distinct 'ICD9' std, map9.code std_code
+     , 'ICD9CM:' || map9.code parent_code
+     , 'kuh_dx_id_' || edg.dx_id || '\' path_seg
+     , 'KUH|DX_ID:' || edg.dx_id child_code, edg.dx_id, edg.dx_name
+from clarity.edg_current_icd9 map9
+join clarity.clarity_edg edg on map9.dx_id = edg.dx_id
+;
 
 ------------------------------------------------------------------------------
 ---------------- C_NAME       : ACT Diagnoses ICD-10
@@ -22,35 +43,24 @@ create table "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1  nologging as select * f
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
 insert /*+  APPEND */ into "&&metadata_schema".ACT_ICD10CM_DX_2018AA
-with icd10_dx_id_map
-as
-(
-SELECT
-map10.code icd10,
-map10.dx_id,
-edg.dx_name
-FROM
-clarity.edg_current_icd10 map10
-JOIN clarity.clarity_edg edg ON map10.dx_id = edg.dx_id
-)
 select
 --map10.*,
 C_HLEVEL +1 C_HLEVEL,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_FULLNAME ,
+C_FULLNAME || map10.path_seg C_FULLNAME ,
 map10.dx_name c_name ,
 C_SYNONYM_CD ,
 C_VISUALATTRIBUTES ,
 C_TOTALNUM ,
-'KUH|DX_ID:' || map10.dx_id C_BASECODE ,
+map10.child_code C_BASECODE ,
 C_METADATAXML ,
 C_FACTTABLECOLUMN ,
 C_TABLENAME ,
 C_COLUMNNAME ,
 C_COLUMNDATATYPE ,
 C_OPERATOR ,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_DIMCODE ,
+C_FULLNAME || map10.path_seg C_DIMCODE ,
 C_COMMENT ,
-C_TOOLTIP ||'kuh_dx_id_' || map10.dx_id || '\' C_TOOLTIP,
+C_TOOLTIP || map10.path_seg C_TOOLTIP,
 UPDATE_DATE ,
 DOWNLOAD_DATE ,
 IMPORT_DATE ,
@@ -61,8 +71,9 @@ M_EXCLUSION_CD ,
 C_PATH ,
 C_SYMBOL
 from "&&metadata_schema".ACT_ICD10CM_DX_2018AA meta
-join icd10_dx_id_map map10
-on 'ICD10CM:'||map10.icd10 = meta.c_basecode
+join icd_to_dx_id map10
+on map10.parent_code = meta.c_basecode
+where map10.std = 'ICD10'
 ;
 --1,434,745 rows inserted
 commit
@@ -74,35 +85,23 @@ commit
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
 insert /*+  APPEND */ into "&&metadata_schema".ACT_ICD9CM_DX_2018AA
-with icd9_dx_id_map
-as
-(
-SELECT
-    map9.code icd9,
-    map9.dx_id,
-    edg.dx_name
-FROM
-clarity.edg_current_icd9 map9
-    JOIN clarity.clarity_edg edg ON map9.dx_id = edg.dx_id
-)
 select
---map9.*,
 C_HLEVEL +1 C_HLEVEL,
-C_FULLNAME ||'kuh_dx_id_' || map9.dx_id || '\' C_FULLNAME ,
+C_FULLNAME || map9.path_seg C_FULLNAME ,
 map9.dx_name c_name ,
 C_SYNONYM_CD ,
 C_VISUALATTRIBUTES ,
 C_TOTALNUM ,
-'KUH|DX_ID:' || map9.dx_id C_BASECODE ,
+map9.child_code C_BASECODE ,
 C_METADATAXML ,
 C_FACTTABLECOLUMN ,
 C_TABLENAME ,
 C_COLUMNNAME ,
 C_COLUMNDATATYPE ,
 C_OPERATOR ,
-C_FULLNAME ||'kuh_dx_id_' || map9.dx_id || '\' C_DIMCODE ,
+C_FULLNAME || map9.path_seg C_DIMCODE ,
 C_COMMENT ,
-C_TOOLTIP ||'kuh_dx_id_' || map9.dx_id || '\' C_TOOLTIP,
+C_TOOLTIP || map9.path_seg C_TOOLTIP,
 UPDATE_DATE ,
 DOWNLOAD_DATE ,
 IMPORT_DATE ,
@@ -113,8 +112,9 @@ M_EXCLUSION_CD ,
 C_PATH ,
 C_SYMBOL
 from "&&metadata_schema".ACT_ICD9CM_DX_2018AA meta
-join icd9_dx_id_map map9
-on 'ICD9CM:'||map9.icd9 = meta.c_basecode
+join icd_to_dx_id map9
+on map9.parent_code = meta.c_basecode
+where map9.std = 'ICD9'
 ;
 -- 1,716,461 rows inserted.
 commit
@@ -126,21 +126,9 @@ commit
 ---------------- subtree      : mapping apply to entire tree
 -------------------------------------------------------------------------------
 insert /*+  APPEND */ into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
-with icd9_dx_id_map
-as
-(
-SELECT
-    map9.code icd9,
-    map9.dx_id,
-    edg.dx_name
-FROM
-clarity.edg_current_icd9 map9
-    JOIN clarity.clarity_edg edg ON map9.dx_id = edg.dx_id
-)
 select
---map9.*,
 C_HLEVEL +1 C_HLEVEL,
-C_FULLNAME ||'kuh_dx_id_' || map9.dx_id || '\' C_FULLNAME ,
+C_FULLNAME || map9.path_seg C_FULLNAME ,
 map9.dx_name c_name ,
 C_SYNONYM_CD ,
 C_VISUALATTRIBUTES ,
@@ -152,9 +140,9 @@ C_TABLENAME ,
 C_COLUMNNAME ,
 C_COLUMNDATATYPE ,
 C_OPERATOR ,
-C_FULLNAME ||'kuh_dx_id_' || map9.dx_id || '\' C_DIMCODE ,
+C_FULLNAME || map9.path_seg C_DIMCODE ,
 C_COMMENT ,
-C_TOOLTIP ||'kuh_dx_id_' || map9.dx_id || '\' C_TOOLTIP,
+C_TOOLTIP || map9.path_seg C_TOOLTIP,
 UPDATE_DATE ,
 DOWNLOAD_DATE ,
 IMPORT_DATE ,
@@ -165,58 +153,12 @@ M_EXCLUSION_CD ,
 C_PATH ,
 C_SYMBOL
 from "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1 meta
-join icd9_dx_id_map map9
-on 'ICD9CM:'||map9.icd9 = meta.c_basecode
+join icd_to_dx_id map9
+on map9.parent_code = meta.c_basecode
 ;
--- 51,439,100 rows inserted.
+-- 53,066,967 rows inserted.
 commit;
---------------------------------------------------------------------------------------------------------------------------
-insert /*+  APPEND */ into "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1
-with icd10_dx_id_map
-as
-(
-SELECT
-map10.code icd10,
-map10.dx_id,
-edg.dx_name
-FROM
-clarity.edg_current_icd10 map10
-JOIN clarity.clarity_edg edg ON map10.dx_id = edg.dx_id
-)
-select
---map10.*,
-C_HLEVEL +1 C_HLEVEL,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_FULLNAME ,
-map10.dx_name c_name ,
-C_SYNONYM_CD ,
-C_VISUALATTRIBUTES ,
-C_TOTALNUM ,
-'KUH|DX_ID:' || map10.dx_id C_BASECODE ,
-C_METADATAXML ,
-C_FACTTABLECOLUMN ,
-C_TABLENAME ,
-C_COLUMNNAME ,
-C_COLUMNDATATYPE ,
-C_OPERATOR ,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_DIMCODE ,
-C_COMMENT ,
-C_TOOLTIP ||'kuh_dx_id_' || map10.dx_id || '\' C_TOOLTIP,
-UPDATE_DATE ,
-DOWNLOAD_DATE ,
-IMPORT_DATE ,
-'ACT_ETL'SOURCESYSTEM_CD ,
-VALUETYPE_CD ,
-M_APPLIED_PATH ,
-M_EXCLUSION_CD ,
-C_PATH ,
-C_SYMBOL
-from "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1 meta
-join icd10_dx_id_map map10
-on 'ICD10CM:'||map10.icd10 = meta.c_basecode
-;
---1,662,760 rows inserted
-commit
-;
+
 
 
 delete from nightherondata.concept_dimension
@@ -231,7 +173,7 @@ insert into nightherondata.concept_dimension(
   import_date,
   sourcesystem_cd
   )
-select distinct
+select
   ib.c_basecode,
   ib.c_fullname,
   ib.c_name,
@@ -241,13 +183,12 @@ select distinct
   'ACT'
 from (
  select * from blueheronmetadata.ACT_ICD10CM_DX_2018AA union all
+ select * from blueheronmetadata.NCATS_ICD10_ICD9_DX_V1 union all
  select * from blueheronmetadata.ACT_ICD9CM_DX_2018AA
 ) ib
 where ib.c_basecode is not null
 ;
 
-exit
-;
 
 -- generate SQL code for indexes. ISSUE: use stored procedures instead?
 create or replace view act_dx_ix_code_gen as
