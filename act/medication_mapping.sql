@@ -261,10 +261,23 @@ select
   sysdate,
   'ACT'
 from (
-  select * from blueheronmetadata.ACT_MED_ALPHA_V2_121318 union all
-  select * from blueheronmetadata.ACT_MED_VA_V2_092818
+  select
+    c_basecode,
+    c_fullname,
+    c_name,
+    update_date,
+    download_date
+  from blueheronmetadata.ACT_MED_ALPHA_V2_121318 union all
+  select
+    c_basecode,
+    c_fullname,
+    c_name,
+    update_date,
+    download_date
+  from blueheronmetadata.ACT_MED_VA_V2_092818
 ) ib
 where ib.c_basecode is not null
 ;
+--1,973,835 rows inserted.
 
 commit;
