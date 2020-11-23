@@ -65,6 +65,18 @@ where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
 commit
 ;
 
+
+/** COVID Prodcedures: replace CPT4 with CPT
+ 1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
+*/
+update blueheronmetadata.act_covid
+set c_basecode = replace(c_basecode, 'CPT4', 'CPT')
+where c_basecode like 'CPT4:%'
+;
+commit
+;
+
+/** fill in concept dimension */
 delete from nightherondata.concept_dimension
 where concept_path like '\ACT\UMLS_C0031437\SNOMED_3947185011\%';
 
