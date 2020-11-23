@@ -76,6 +76,40 @@ where c_basecode like 'CPT4:%'
 commit
 ;
 
+update blueheronmetadata.act_covid
+set c_basecode = 'COVID-xyz-test:NEGATIVE'
+where c_basecode = 'LOINC:94310-0 NEGATIVE';
+commit;
+
+update blueheronmetadata.act_covid
+set c_basecode = 'COVID-xyz-test:POSITIVE'
+where c_basecode = 'LOINC:94310-0 POSITIVE';
+commit;
+
+
+/** LABS UMLS
+-- Is folder(or leaf) which could have one to many relationsship.
+
+from:Morris, Michele <mim18@pitt.edu>
+Yes map the labs to the derived facts. I think that is what most sites are doing at this point. Your version of the files may
+have an error where Positive and Negative have the same code but that is fixed in the updated version of the files which I am
+getting ready to repost.
+ANY Negative Lab Test  UMLS:C1334932
+ANY Positive Lab Test  UMLS:C1335447
+ANY Pending Lab Test  UMLS:C1611271
+ANY Equivocal Lab Test  UMLS:C4303880
+If you cannot map the lab to one of the 4 values you should map to Laboratory Testing
+Laboratory Testing  UMLS:C0022885
+
+
+Lab Orders	UMLS:C0086143
+ANY Positive Lab Test	UMLS:C1444714
+ANY Negative Lab Test	UMLS:C1444714
+ANY Pending Lab Test	UMLS:C1611271
+ANY Equivocal Lab Test	UMLS:C4303880
+*/
+
+
 /** fill in concept dimension */
 delete from nightherondata.concept_dimension
 where concept_path like '\ACT\UMLS_C0031437\SNOMED_3947185011\%';
