@@ -237,3 +237,34 @@ whenever sqlerror exit sql.sqlcode;
 create table blueheronmetadata."&&MED_TABLE"
 as
 select * from TEMP_NCATS_MEDS_HERON2;
+
+
+-- activate concepts
+delete from nightherondata.concept_dimension
+where concept_path like '\ACT\Medications%';
+
+insert into nightherondata.concept_dimension(
+  concept_cd,
+  concept_path,
+  name_char,
+  update_date,
+  download_date,
+  import_date,
+  sourcesystem_cd
+  )
+select
+  ib.c_basecode,
+  ib.c_fullname,
+  ib.c_name,
+  update_date,
+  download_date,
+  sysdate,
+  'ACT'
+from (
+  select * from blueheronmetadata.ACT_MED_ALPHA_V2_121318 union all
+  select * from blueheronmetadata.ACT_MED_VA_V2_092818
+) ib
+where ib.c_basecode is not null
+;
+
+commit;
