@@ -326,7 +326,7 @@ insert into blueheronmetadata.act_covid (
 delete from nightherondata.concept_dimension
 where concept_path like '\ACT\UMLS_C0031437\SNOMED_3947185011\%';
 
-insert into nightherondata.concept_dimension(
+insert /*+ APPEND */ into nightherondata.concept_dimension(
   concept_cd,
   concept_path,
   name_char,

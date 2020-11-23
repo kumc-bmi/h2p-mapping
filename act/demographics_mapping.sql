@@ -125,7 +125,7 @@ from output
 
 --- land act_covid concepts in concept_dimension
 delete from nightherondata.concept_dimension where concept_path like '\ACT\Demographics\%' ;
-insert into nightherondata.concept_dimension (
+insert /*+ APPEND */ into nightherondata.concept_dimension (
     concept_cd,
     concept_path,
     name_char,
