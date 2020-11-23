@@ -27,10 +27,14 @@ status/diagnosis: status/README
 	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema) $(shrine_ont_schema)
 	touch $@
 
+status/labs: status/README
+	sqlplus $(ACCOUNT) @labs_mapping.sql $(metadata_schema) $(shrine_ont_schema) $(etl_schema)
+	touch $@
+
 status/procedures: status/README
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
 	touch $@
 
-status/table_access: status/demographics status/diagnosis status/procedures
+status/table_access: status/demographics status/diagnosis status/labs status/procedures
 	sqlplus $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
