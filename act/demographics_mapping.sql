@@ -122,3 +122,32 @@ select
 -- so, 164 + 2 childs = 166 (look ok)
 from output
 ;
+
+--- land act_covid concepts in concept_dimension
+delete from nightherondata.concept_dimension where concept_path like '\ACT\Demographics\%' ;
+insert into nightherondata.concept_dimension (
+    concept_cd,
+    concept_path,
+    name_char,
+    update_date,
+    download_date,
+    import_date,
+    sourcesystem_cd
+)
+    select distinct
+        ib.c_basecode,
+        ib.c_fullname,
+        ib.c_name,
+        update_date,
+        download_date,
+        sysdate,
+        'ACT'
+    from
+        blueheronmetadata.ncats_demographics ib
+    where
+        ib.c_basecode is not null;
+-- 163 rows inserted
+
+commit;
+
+
