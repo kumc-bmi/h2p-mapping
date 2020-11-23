@@ -191,7 +191,7 @@ where ib.c_basecode is not null
 
 
 -- generate SQL code for indexes. ISSUE: use stored procedures instead?
-create or replace view act_dx_ix_code_gen as
+create or replace view act_ix_code_gen as
 with ix_cols as (
   select 'C_FULLNAME' acol, 'unique' arity from dual union all
   select 'M_EXCLUSION_CD', '' from dual union all
@@ -200,16 +200,15 @@ with ix_cols as (
 ), ea as (
   select c_table_cd, c_table_name
   from shrine_ont_act.table_access
-  where c_table_name like '%_DX_%'
 ), mk_ix as (
-  select lower('create ' || arity || ' index ' || c_table_cd || '_' || acol || ' on ' || c_table_name || '(' || acol || ') parallel 4;') sql
+  select c_table_name, lower('create ' || arity || ' index ' || c_table_cd || '_' || acol || ' on ' || c_table_name || '(' || acol || ') parallel 4;') sql
   from ix_cols cross join ea
 ), rm_ix as (
-  select lower('drop index ' || c_table_cd || '_' || acol || ';') sql
+  select c_table_name, lower('drop index ' || c_table_cd || '_' || acol || ';') sql
   from ix_cols cross join ea
 )
 select * from rm_ix union all select * from mk_ix;
--- select * from act_dx_ix_code_gen;
+-- select sql from act_ix_code_gen where c_table_name like '%_DX_%';
 
 alter session set current_schema=&&metadata_schema;
 
