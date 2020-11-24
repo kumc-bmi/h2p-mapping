@@ -5,6 +5,9 @@ ACCOUNT=$(USERNAME)/$(PASSWORD)@$(SID)
 
 act_shrine_ontology_mapping: status/table_access
 
+clean:
+	rm -rf status
+
 # Make a directory for status, i.e. completion times
 # Then as each script finishes, touch a corresponding file.
 status/README:
