@@ -187,7 +187,7 @@ from (
  select * from blueheronmetadata.NCATS_ICD10_ICD9_DX_V1 union all
  select * from blueheronmetadata.ACT_ICD9CM_DX_2018AA
 ) ib
-where ib.c_basecode is not null
+where ib.c_basecode is not null and ib.c_synonym_cd = 'N'
 ;
 
 
@@ -235,7 +235,8 @@ create unique index act_dx_icd9_2018_c_fullname on act_icd9cm_dx_2018aa(c_fullna
 create  index act_dx_icd9_2018_m_exclusion_c on act_icd9cm_dx_2018aa(m_exclusion_cd) parallel 4;
 create  index act_dx_icd9_2018_m_applied_pat on act_icd9cm_dx_2018aa(m_applied_path) parallel 4;
 create  index act_dx_icd9_2018_c_hlevel on act_icd9cm_dx_2018aa(c_hlevel) parallel 4;
-create unique index act_dx_10_9_c_fullname on ncats_icd10_icd9_dx_v1(c_fullname) parallel 4;
+
+create /* unique */ index act_dx_10_9_c_fullname on ncats_icd10_icd9_dx_v1(c_fullname) parallel 4;
 create  index act_dx_10_9_m_exclusion_cd on ncats_icd10_icd9_dx_v1(m_exclusion_cd) parallel 4;
 create  index act_dx_10_9_m_applied_path on ncats_icd10_icd9_dx_v1(m_applied_path) parallel 4;
 create  index act_dx_10_9_c_hlevel on ncats_icd10_icd9_dx_v1(c_hlevel) parallel 4;
