@@ -265,5 +265,6 @@ insert into nightherondata.concept_dimension (
         blueheronmetadata."&&MED_TABLE"
     where
         c_basecode is not null
+;
 
 commit;
