@@ -12,6 +12,7 @@ define closure_schema=&3;
 whenever sqlerror continue;
 drop table "&&metadata_schema".ACT_LOINC_LAB_2018AA purge;
 drop table "&&metadata_schema".NCATS_LABS purge;
+drop table loinc_to_component_id purge;
 whenever sqlerror exit sql.sqlcode;
 create table "&&metadata_schema".ACT_LOINC_LAB_2018AA nologging as select * from "&&shrine_ont_schema".ACT_LOINC_LAB_2018AA;
 create table "&&metadata_schema".NCATS_LABS nologging as select * from "&&shrine_ont_schema".NCATS_LABS;
