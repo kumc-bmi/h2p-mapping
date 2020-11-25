@@ -187,6 +187,124 @@ from terms_dxi td
 ;
 commit;
 
+/** mapping covid terms using the following codes:
+XXII Codes for special purposes  
+  U00-U49 Provisional assignment of new diseases of uncertain etiology or emergency use  
+    U04 Severe acute respiratory syndrome [SARS]  
+    U07 Emergency use of U07  
+      U07.0 Vaping-related disorder  
+      U07.1 COVID-19, virus identified  
+      U07.2 COVID-19, virus not identified
+https://icd.who.int/browse10/2019/en#/U07.1
+*/
+
+/** Mix PCORNet diagnosis ICD10 root with WHO Emergency codes for COVID-19 */
+create or replace view pcori_who_covid as
+with icd10_dx_root as (
+select *
+from "&&i2b2_meta_schema".pcornet_diag
+where c_fullname = '\PCORI\DIAGNOSIS\10\A20098492\'
+order by c_fullname
+),
+who_covid_2 as (
+-- select 1 as c_hlevel, 'XXII Codes for special purposes' as c_name from dual union all
+select 3 as c_hlevel, 'U00-U49 Provisional assignment of new diseases of uncertain etiology or emergency use' as c_name
+     , 'ICD10:U00-U49' as c_basecode
+     ,  parent.c_fullname || 'ICD10:U00-U49\' as c_fullname
+     , null pcori_basecode
+from icd10_dx_root parent
+),
+who_covid_3 as (
+select 4 as c_hlevel, 'U07 Emergency use of U07' as c_name, 'ICD10:U07' as c_basecode
+     , parent.c_fullname || 'ICD10:U07\' as c_fullname
+     , null pcori_basecode
+from who_covid_2 parent
+),
+who_covid_4 as (
+select 5 as c_hlevel, 'U07.1 COVID-19, virus identified' as c_name, 'ICD10:U07.1' as c_basecode from dual union all
+select 5 as c_hlevel, 'U07.2 COVID-19, virus not identified' as c_name, 'ICD10:U07.2' as c_basecode from dual
+)
+, ea as (
+select * from who_covid_2 union all
+select * from who_covid_3 union all
+select leaf.*, parent.c_fullname || leaf.c_basecode || '\' as c_fullname
+     , replace(leaf.c_basecode, 'ICD10:', '') as pcori_basecode
+from who_covid_4 leaf cross join who_covid_3 parent
+)
+select ea.c_hlevel
+     , ea.c_fullname
+     , ea.c_name
+     , m.c_synonym_cd
+     , case when ea.c_basecode like '%.%' then 'LA' else 'FA' end as c_visualattributes -- @@Always folder
+     , m.c_totalnum
+     , ea.c_basecode
+     , m.c_metadataxml
+     , m.c_facttablecolumn
+     , m.c_tablename
+     , m.c_columnname
+     , m.c_columndatatype
+     , m.c_operator
+     , m.c_dimcode
+     , m.c_comment
+     , 'TODO' c_tooltip
+     , m.m_applied_path
+     , sysdate update_date
+     , m.download_date
+     , sysdate import_date
+     , 'heron@kumc.edu' sourcesystem_cd
+     , m.valuetype_cd
+     , m.m_exclusion_cd
+     , m.c_path
+     , m.c_symbol
+     , ea.pcori_basecode
+from ea
+cross join icd10_dx_root m;
+
+/** O2 / Epic / IMO terms for covid */
+create or replace view covid_dx_id_terms as
+with ea as (
+select *
+from clarity.clarity_edg
+where current_icd10_list like '%U07.1%'
+)
+select m.c_hlevel + 1 as c_hlevel
+     , m.c_fullname || 'DX_ID ' || ea.dx_id || '\' as c_fullname
+     , ea.dx_name as c_name
+     , m.c_synonym_cd
+     , 'LA' as c_visualattributes
+     , m.c_totalnum
+     , 'KUH|DX_ID:' || ea.dx_id as c_basecode
+     , m.c_metadataxml
+     , m.c_facttablecolumn
+     , m.c_tablename
+     , m.c_columnname
+     , m.c_columndatatype
+     , m.c_operator
+     , m.c_dimcode
+     , m.c_comment
+     , 'TODO' c_tooltip
+     , m.m_applied_path
+     , sysdate update_date
+     , m.download_date
+     , sysdate import_date
+     , 'heron@kumc.edu' sourcesystem_cd
+     , m.valuetype_cd
+     , m.m_exclusion_cd
+     , m.c_path
+     , m.c_symbol
+     , m.pcori_basecode
+from pcori_who_covid m
+cross join ea
+where m.pcori_basecode = 'U07.1'
+;
+
+insert into "&&i2b2_meta_schema".pcornet_diag
+select * from pcori_who_covid
+union all
+select * from COVID_DX_ID_TERMS
+;
+commit;
+
 -- Other diagnosis mappings such as modifiers for PDX, DX_SOURCE.
 insert into "&&i2b2_meta_schema".PCORNET_DIAG
 SELECT pcornet_diag.C_HLEVEL+1,
