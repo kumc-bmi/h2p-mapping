@@ -130,20 +130,20 @@ alter session set current_schema=&&metadata_schema;
 
 whenever sqlerror continue;
 drop index act_lab_loinc_2018_c_fullname;
-drop index act_lab_loinc_2018_m_exclusion_cd;
-drop index act_lab_loinc_2018_m_applied_path;
 drop index act_lab_loinc_2018_c_hlevel;
+drop index act_lab_loinc_2018_m_applied_p;
+drop index act_lab_loinc_2018_m_exclusion;
 drop index act_lab_c_fullname;
-drop index act_lab_m_exclusion_cd;
-drop index act_lab_m_applied_path;
 drop index act_lab_c_hlevel;
+drop index act_lab_m_applied_path;
+drop index act_lab_m_exclusion_cd;
 whenever sqlerror exit sql.sqlcode;
 
 create unique index act_lab_loinc_2018_c_fullname on act_loinc_lab_2018aa(c_fullname) parallel 4;
-create  index act_lab_loinc_2018_m_exclusion_cd on act_loinc_lab_2018aa(m_exclusion_cd) parallel 4;
-create  index act_lab_loinc_2018_m_applied_path on act_loinc_lab_2018aa(m_applied_path) parallel 4;
 create  index act_lab_loinc_2018_c_hlevel on act_loinc_lab_2018aa(c_hlevel) parallel 4;
+create  index act_lab_loinc_2018_m_applied_p on act_loinc_lab_2018aa(m_applied_path) parallel 4;
+create  index act_lab_loinc_2018_m_exclusion on act_loinc_lab_2018aa(m_exclusion_cd) parallel 4;
 create unique index act_lab_c_fullname on ncats_labs(c_fullname) parallel 4;
-create  index act_lab_m_exclusion_cd on ncats_labs(m_exclusion_cd) parallel 4;
-create  index act_lab_m_applied_path on ncats_labs(m_applied_path) parallel 4;
 create  index act_lab_c_hlevel on ncats_labs(c_hlevel) parallel 4;
+create  index act_lab_m_applied_path on ncats_labs(m_applied_path) parallel 4;
+create  index act_lab_m_exclusion_cd on ncats_labs(m_exclusion_cd) parallel 4;
