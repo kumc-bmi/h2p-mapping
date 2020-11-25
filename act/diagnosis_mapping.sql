@@ -201,13 +201,14 @@ with ix_cols as (
 ), ea as (
   select c_table_cd, c_table_name
   from shrine_ont_act.table_access
+), ix_parts as (
+  select c_table_name, arity, substr(c_table_cd || '_' || acol, 1, 30) ix_name, acol
+  from ix_cols cross join ea
 ), mk_ix as (
-  select c_table_name, lower('create ' || arity || ' index ' || substr(c_table_cd || '_' || acol, 1, 30) || ' on ' || c_table_name || '(' || acol || ') parallel 4;') sql
-  from ix_cols cross join ea
-), rm_ix as (
-  select c_table_name, lower('drop index ' || c_table_cd || '_' || acol || ';') sql
-  from ix_cols cross join ea
-)
+  select c_table_name
+       , lower('create ' || arity || ' index ' || ix_name || ' on ' || c_table_name || '(' || acol || ') parallel 4;') sql
+  from ix_parts
+), rm_ix as ( select c_table_name, lower('drop index ' || ix_name || ';') sql from ix_parts )
 select * from rm_ix union all select * from mk_ix;
 -- select sql from act_ix_code_gen where c_table_name like '%_DX_%';
 
@@ -215,16 +216,16 @@ alter session set current_schema=&&metadata_schema;
 
 whenever sqlerror continue;
 drop index act_dx_icd10_2018_c_fullname;
-drop index act_dx_icd10_2018_m_exclusion_cd;
-drop index act_dx_icd10_2018_m_applied_path;
-drop index act_dx_icd10_2018_c_hlevel;
 drop index act_dx_icd9_2018_c_fullname;
-drop index act_dx_icd9_2018_m_exclusion_cd;
-drop index act_dx_icd9_2018_m_applied_path;
-drop index act_dx_icd9_2018_c_hlevel;
 drop index act_dx_10_9_c_fullname;
+drop index act_dx_icd10_2018_m_exclusion_;
+drop index act_dx_icd9_2018_m_exclusion_c;
 drop index act_dx_10_9_m_exclusion_cd;
+drop index act_dx_icd10_2018_m_applied_pa;
+drop index act_dx_icd9_2018_m_applied_pat;
 drop index act_dx_10_9_m_applied_path;
+drop index act_dx_icd10_2018_c_hlevel;
+drop index act_dx_icd9_2018_c_hlevel;
 drop index act_dx_10_9_c_hlevel;
 whenever sqlerror exit sql.sqlcode;
 create unique index act_dx_icd10_2018_c_fullname on act_icd10cm_dx_2018aa(c_fullname) parallel 4;
