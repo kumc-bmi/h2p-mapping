@@ -94,7 +94,7 @@ commit;
 
 /** fill in concept dimension */
 delete from nightherondata.concept_dimension
-where concept_path like '\ACT\Lab\%';
+where concept_path like '\ACT\Lab%';
 
 insert /*+ APPEND */ into nightherondata.concept_dimension(
   concept_cd,
