@@ -27,6 +27,11 @@ status/diagnosis: status/README
 	sqlplus $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema) $(shrine_ont_schema)
 	touch $@
 
+status/medications: status/README
+	sql $(ACCOUNT) @medication_mapping.sql $(etl_schema) $(shrine_ont_schema) ACT_MED_ALPHA_V2_121318
+	sql $(ACCOUNT) @medication_mapping.sql $(etl_schema) $(shrine_ont_schema) ACT_MED_VA_V2_092818
+	touch $@
+
 status/procedures: status/README
 	sqlplus $(ACCOUNT) @procedure_ont_map.sql
 	touch $@
