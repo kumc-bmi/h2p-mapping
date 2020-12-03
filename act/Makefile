@@ -7,39 +7,40 @@ ACCOUNT=$(USERNAME)/$(PASSWORD)@$(SID)
 
 act_shrine_ontology_mapping: status/table_access
 
-clean:
-	rm -rf status
 
-# Make a directory for status, i.e. completion times
-# Then as each script finishes, touch a corresponding file.
-status/README:
-	mkdir -p status
-	echo "These files represent completion status of SQL scripts." >$@
+status/table_access: status/demographics status/diagnosis status/labs status/procedures
+	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
+	touch $@
+
 
 status/demographics: status/meta_manual_mapping
 	sql $(ACCOUNT) @demographics_mapping.sql $(metadata_schema) $(shrine_ont_schema)
+	mkdir -p status
 	touch $@
 
-status/meta_manual_mapping: status/README META_MANUAL_MAPPING.dat META_MANUAL_MAPPING.ctl
+status/meta_manual_mapping: META_MANUAL_MAPPING.dat META_MANUAL_MAPPING.ctl
 	sqlldr $(ACCOUNT) control=META_MANUAL_MAPPING.ctl
+	mkdir -p status
 	touch $@
 
 # link .dat as sqlldlr takes only .dat, and .csv are easier to view on github.
 META_MANUAL_MAPPING.dat: META_MANUAL_MAPPING.csv
 	ln -s $< $@
 
-status/diagnosis: status/README
+status/diagnosis:
 	sql $(ACCOUNT) @diagnosis_mapping.sql $(metadata_schema) $(shrine_ont_schema)
+	mkdir -p status
 	touch $@
 
-status/labs: status/README
+status/labs:
 	sql $(ACCOUNT) @labs_mapping.sql $(metadata_schema) $(shrine_ont_schema) $(etl_schema)
+	mkdir -p status
 	touch $@
 
-status/procedures: status/README
+status/procedures:
 	sql $(ACCOUNT) @procedure_ont_map.sql
+	mkdir -p status
 	touch $@
 
-status/table_access: status/demographics status/diagnosis status/labs status/procedures
-	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
-	touch $@
+clean:
+	rm -rf status
