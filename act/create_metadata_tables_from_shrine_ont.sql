@@ -14,7 +14,7 @@ drop table "&&metadata_schema".ACT_LOINC_LAB_2018AA purge;
 drop table "&&metadata_schema".ACT_MED_ALPHA_V2_121318 purge;
 drop table "&&metadata_schema".ACT_MED_VA_V2_092818 purge;
 drop table "&&metadata_schema".NCATS_LABS purge;
-drop table "&&metadata_schema".NCATS_VISIT_DETAILS purge;
+
 whenever sqlerror exit sql.sqlcode
 ;
 -- SQL statements to create table: 
@@ -24,6 +24,6 @@ create table "&&metadata_schema".ACT_LOINC_LAB_2018AA  nologging as select * fro
 create table "&&metadata_schema".ACT_MED_ALPHA_V2_121318  nologging as select * from "&&shrine_ont_schema".ACT_MED_ALPHA_V2_121318 ;
 create table "&&metadata_schema".ACT_MED_VA_V2_092818  nologging as select * from "&&shrine_ont_schema".ACT_MED_VA_V2_092818 ;
 create table "&&metadata_schema".NCATS_LABS  nologging as select * from "&&shrine_ont_schema".NCATS_LABS ;
-create table "&&metadata_schema".NCATS_VISIT_DETAILS  nologging as select * from "&&shrine_ont_schema".NCATS_VISIT_DETAILS ;
+
 exit
 ;

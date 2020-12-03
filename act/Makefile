@@ -8,10 +8,16 @@ ACCOUNT=$(USERNAME)/$(PASSWORD)@$(SID)
 act_shrine_ontology_mapping: status/table_access
 
 
-status/table_access: status/demographics status/diagnosis status/labs status/procedures
+status/table_access: status/demographics status/visit_details \
+		status/diagnosis status/labs status/procedures
 	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
 
+status/visit_details:
+	sql $(ACCOUNT) @visit_details_map.sql \
+		$(metadata_schema) $(shrine_ont_schema) $(heron_data_schema)
+	mkdir -p status
+	touch $@
 
 status/demographics: status/meta_manual_mapping
 	sql $(ACCOUNT) @demographics_mapping.sql $(metadata_schema) $(shrine_ont_schema)
