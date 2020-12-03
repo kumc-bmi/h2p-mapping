@@ -43,6 +43,12 @@ status/labs:
 	mkdir -p status
 	touch $@
 
+status/medications:
+	sql $(ACCOUNT) @medication_mapping.sql $(etl_schema) $(shrine_ont_schema) ACT_MED_ALPHA_V2_121318
+	sql $(ACCOUNT) @medication_mapping.sql $(etl_schema) $(shrine_ont_schema) ACT_MED_VA_V2_092818
+	mkdir -p status
+	touch $@
+
 status/procedures:
 	sql $(ACCOUNT) @procedure_ont_map.sql
 	mkdir -p status
