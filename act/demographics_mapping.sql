@@ -143,7 +143,7 @@ insert /*+ APPEND */ into nightherondata.concept_dimension (
         sysdate,
         'ACT'
     from
-        blueheronmetadata.ncats_demographics ib
+        "&&metadata_schema".ncats_demographics ib
     where
         ib.c_basecode is not null;
 -- 163 rows inserted

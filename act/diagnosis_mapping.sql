@@ -183,9 +183,9 @@ select
   sysdate,
   'ACT'
 from (
- select * from blueheronmetadata.ACT_ICD10CM_DX_2018AA union all
- select * from blueheronmetadata.NCATS_ICD10_ICD9_DX_V1 union all
- select * from blueheronmetadata.ACT_ICD9CM_DX_2018AA
+ select * from "&&metadata_schema".ACT_ICD10CM_DX_2018AA union all
+ select * from "&&metadata_schema".NCATS_ICD10_ICD9_DX_V1 union all
+ select * from "&&metadata_schema".ACT_ICD9CM_DX_2018AA
 ) ib
 where ib.c_basecode is not null and ib.c_synonym_cd = 'N'
 ;

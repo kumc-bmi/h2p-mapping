@@ -56,32 +56,32 @@ and c_basecode like 'ICD9PROC:%'
 /** Create procedure tables
  */
 whenever sqlerror continue;
-drop table BLUEHERONMETADATA.ACT_CPT_PX_2018AA;
-drop table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA;
-drop table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA;
-drop table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA;
+drop table "&&metadata_schema".ACT_CPT_PX_2018AA;
+drop table "&&metadata_schema".ACT_HCPCS_PX_2018AA;
+drop table "&&metadata_schema".ACT_ICD10PCS_PX_2018AA;
+drop table "&&metadata_schema".ACT_ICD9CM_PX_2018AA;
 whenever sqlerror exit sql.sqlcode;
 
-create table BLUEHERONMETADATA.ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
-create table BLUEHERONMETADATA.ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA;
-create table BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA;
-create table BLUEHERONMETADATA.ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA;
+create table "&&metadata_schema".ACT_CPT_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_CPT_PX_2018AA;
+create table "&&metadata_schema".ACT_HCPCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_HCPCS_PX_2018AA;
+create table "&&metadata_schema".ACT_ICD10PCS_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD10PCS_PX_2018AA;
+create table "&&metadata_schema".ACT_ICD9CM_PX_2018AA as select * from SHRINE_ONT_ACT.ACT_ICD9CM_PX_2018AA;
 
 
-update blueheronmetadata.ACT_CPT_PX_2018AA
+update "&&metadata_schema".ACT_CPT_PX_2018AA
 set c_basecode = replace(C_BASECODE,'CPT4:','CPT:')
 where c_fullname like '\ACT\Procedures\%'
 and c_basecode like 'CPT4:%'
 ;
 
-update blueheronmetadata.ACT_ICD9CM_PX_2018AA
+update "&&metadata_schema".ACT_ICD9CM_PX_2018AA
 set c_basecode = replace(c_basecode, 'ICD9PROC:', 'ICD9:')
 where c_fullname like '\ACT\Procedures\ICD9\%'
 and c_basecode like 'ICD9PROC:%'
 ;
 -- 4,670 rows updated.
 
-update BLUEHERONMETADATA.ACT_ICD10PCS_PX_2018AA
+update "&&metadata_schema".ACT_ICD10PCS_PX_2018AA
 set c_basecode = replace(c_basecode, 'ICD10PCS:', 'ICD10:')
 where c_fullname like '\ACT\Procedures\%'
 and c_basecode like 'ICD10PCS:%'
@@ -109,10 +109,10 @@ select distinct
   sysdate,
   'ACT'
 from (
- select * from blueheronmetadata.ACT_CPT_PX_2018AA union all
- select * from blueheronmetadata.ACT_HCPCS_PX_2018AA union all
- select * from blueheronmetadata.ACT_ICD10PCS_PX_2018AA union all
- select * from blueheronmetadata.ACT_ICD9CM_PX_2018AA
+ select * from "&&metadata_schema".ACT_CPT_PX_2018AA union all
+ select * from "&&metadata_schema".ACT_HCPCS_PX_2018AA union all
+ select * from "&&metadata_schema".ACT_ICD10PCS_PX_2018AA union all
+ select * from "&&metadata_schema".ACT_ICD9CM_PX_2018AA
 ) ib
 where ib.c_basecode is not null
 ;
@@ -122,7 +122,7 @@ commit;
 
 /** Index procedure metadata
  */
-alter session set current_schema=blueheronmetadata;
+alter session set current_schema="&&metadata_schema";
 whenever sqlerror continue;
 drop index ACT_PX_CPT_APPLIED_IDX ;
 drop index ACT_PX_CPT_EXCLUDE_IDX ;

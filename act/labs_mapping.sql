@@ -25,7 +25,7 @@ create table loinc_to_component_id (
 compress nologging as
 select 'LOINC' std, std.c_basecode   parent_code, loc.c_basecode || '\' path_seg, loc.c_basecode child_code
      , (select c_name
-        from blueheronmetadata.heron_terms ht
+        from "&&metadata_schema".heron_terms ht
         where ht.c_fullname = loc.c_fullname
         and rownum <= 1) c_name
 from "&&closure_schema".metadata_closure mc
@@ -114,9 +114,9 @@ select
   sysdate import_date,
   'ACT' sourcesystem_cd
 from (
- select * from blueheronmetadata.ACT_LOINC_LAB_2018AA
+ select * from "&&metadata_schema".ACT_LOINC_LAB_2018AA
  union all
- select * from blueheronmetadata.NCATS_LABS
+ select * from "&&metadata_schema".NCATS_LABS
 ) ib
 where ib.c_basecode is not null;
 -- 163,753 rows inserted.

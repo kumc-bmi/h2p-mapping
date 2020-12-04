@@ -69,19 +69,19 @@ commit
 /** COVID Prodcedures: replace CPT4 with CPT
  1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
 */
-update blueheronmetadata.act_covid
+update "&&metadata_schema".act_covid
 set c_basecode = replace(c_basecode, 'CPT4', 'CPT')
 where c_basecode like 'CPT4:%'
 ;
 commit
 ;
 
-update blueheronmetadata.act_covid
+update "&&metadata_schema".act_covid
 set c_basecode = 'COVID-xyz-test:NEGATIVE'
 where c_basecode = 'LOINC:94310-0 NEGATIVE';
 commit;
 
-update blueheronmetadata.act_covid
+update "&&metadata_schema".act_covid
 set c_basecode = 'COVID-xyz-test:POSITIVE'
 where c_basecode = 'LOINC:94310-0 POSITIVE';
 commit;
@@ -111,7 +111,7 @@ ANY Equivocal Lab Test	UMLS:C4303880
 
 
 -- map clarity dx_ids to ACT ICD10
-INSERT INTO blueheronmetadata.act_covid
+INSERT INTO "&&metadata_schema".act_covid
     WITH icd10_dx_id_map AS (
         SELECT
             map10.code icd10,
@@ -161,7 +161,7 @@ INSERT INTO blueheronmetadata.act_covid
         shrine_ont_act.act_covid   meta
         JOIN icd10_dx_id_map               map10 ON 'ICD10CM:' || map10.icd10 = meta.c_basecode;
 
-insert into blueheronmetadata.act_covid (
+insert into "&&metadata_schema".act_covid (
     c_hlevel,
     c_fullname,
     c_basecode,
@@ -201,7 +201,7 @@ insert into blueheronmetadata.act_covid (
     'ACT'
 );
 
-insert into blueheronmetadata.act_covid (
+insert into "&&metadata_schema".act_covid (
     c_hlevel,
     c_fullname,
     c_basecode,
@@ -241,7 +241,7 @@ insert into blueheronmetadata.act_covid (
     'ACT'
 );
 
-insert into blueheronmetadata.act_covid (
+insert into "&&metadata_schema".act_covid (
     c_hlevel,
     c_fullname,
     c_basecode,
@@ -281,7 +281,7 @@ insert into blueheronmetadata.act_covid (
     'ACT'
 );
 
-insert into blueheronmetadata.act_covid (
+insert into "&&metadata_schema".act_covid (
     c_hlevel,
     c_fullname,
     c_basecode,
@@ -344,7 +344,7 @@ select distinct
   sysdate,
   'ACT'
 from (
- select * from blueheronmetadata.ACT_COVID
+ select * from "&&metadata_schema".ACT_COVID
 ) ib
 where ib.c_basecode is not null
 ;

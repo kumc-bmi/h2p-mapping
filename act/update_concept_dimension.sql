@@ -71,7 +71,7 @@ DELETE /*+  PARALLEL (20) */ from
 "&&metadata_schema"."HERON_TERMS"
 where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\'
 ;
--- TERM_ID need to be max+1 eg. select max(term_id)+1 from BLUEHERONMETADATA.HERON_TERMS;
+-- TERM_ID need to be max+1 eg. select max(term_id)+1 from "&&metadata_schema".HERON_TERMS;
 INSERT INTO "&&metadata_schema"."HERON_TERMS" (C_HLEVEL, C_FULLNAME, C_NAME, C_SYNONYM_CD, C_VISUALATTRIBUTES, C_BASECODE, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME, C_COLUMNDATATYPE, C_OPERATOR, C_DIMCODE, M_APPLIED_PATH, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD)
   VALUES ('4', '\i2b2\Demographics\LESS_THAN_10\', 'LESS THAN 10', 'N', 'LH ', 'LESS_THAN_10', 'concept_cd', 'concept_dimension', 'concept_path', 'T', 'LIKE', '\i2b2\Demographics\LESS_THAN_10\', '@', SYSDATE,SYSDATE,SYSDATE, 'NCATS_LESS_THAN_10'
   )
@@ -112,7 +112,7 @@ select /*+  PARALLEL (20) */ distinct
 from 
 (
 select C_BASECODE, C_FULLNAME , C_NAME , UPDATE_DATE , DOWNLOAD_DATE,sourcesystem_cd, C_DIMCODE
-from BLUEHERONMETADATA.HERON_TERMS
+from "&&metadata_schema".HERON_TERMS
 where C_FULLNAME = '\i2b2\Demographics\LESS_THAN_10\'
 ) ib
 where ib.c_basecode is not null
