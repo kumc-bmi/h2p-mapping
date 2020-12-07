@@ -51,7 +51,8 @@ and c_basecode like 'ICD9PROC:%'
 ;
 
 */
-
+set echo on;
+define metadata_schema=&1;
 
 /** Create procedure tables
  */

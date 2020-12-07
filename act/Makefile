@@ -52,7 +52,7 @@ status/medications:
 	touch $@
 
 status/procedures:
-	sql $(ACCOUNT) @procedure_ont_map.sql
+	sql $(ACCOUNT) @procedure_ont_map.sql $(metadata_schema)
 	mkdir -p status
 	touch $@
 
