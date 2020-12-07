@@ -13,11 +13,16 @@ whenever sqlerror continue;
 drop table "&&metadata_schema".ACT_LOINC_LAB_2018AA purge;
 drop table "&&metadata_schema".NCATS_LABS purge;
 drop table loinc_to_component_id purge;
+drop table metadata_closure purge;
+drop table metadata_hash purge;
 whenever sqlerror exit sql.sqlcode;
 create table "&&metadata_schema".ACT_LOINC_LAB_2018AA nologging as select * from "&&shrine_ont_schema".ACT_LOINC_LAB_2018AA;
 create table "&&metadata_schema".NCATS_LABS nologging as select * from "&&shrine_ont_schema".NCATS_LABS;
 
 /* Map LOINC codes to COMPONENT_ID using metadata_closure from HERON ETL. */
+create table metadata_closure as select * from "&&closure_schema".metadata_closure@deid;
+create table metadata_hash as select * from "&&closure_schema".metadata_hash@deid;
+
 create table loinc_to_component_id (
   std, parent_code, path_seg, child_code, c_name
 , primary key ( parent_code, child_code )
@@ -28,9 +33,9 @@ select 'LOINC' std, std.c_basecode   parent_code, loc.c_basecode || '\' path_seg
         from "&&metadata_schema".heron_terms ht
         where ht.c_fullname = loc.c_fullname
         and rownum <= 1) c_name
-from "&&closure_schema".metadata_closure mc
-join "&&closure_schema".metadata_hash std on std.c_fullname_hash = mc.ancestor_hash
-join "&&closure_schema".metadata_hash loc on loc.c_fullname_hash = mc.descendant_hash
+from metadata_closure mc
+join metadata_hash std on std.c_fullname_hash = mc.ancestor_hash
+join metadata_hash loc on loc.c_fullname_hash = mc.descendant_hash
 -- HERON LOINC hierarchy
 where std.c_fullname like '\i2b2\Laboratory Tests\%'
 and std.c_basecode like 'LOINC:%'
