@@ -53,7 +53,7 @@ commit;
 --342,973 rows merged.
 
 /** Indexes */
-alter session set current_schema=shrine_ont_act;
+alter session set current_schema="&&metadata_schema";
 -- select sql from act_ix_code_gen where c_table_name like '%_VISIT%';
 whenever sqlerror continue;
 drop index act_visit_c_fullname;
