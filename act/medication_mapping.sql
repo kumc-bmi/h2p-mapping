@@ -1,8 +1,9 @@
 set echo on
 ;
-define i2b2_etl_schema=&1;
+define metadata_schema=&1
 define SHRINE_ONT_SCHEMA=&2
-define MED_TABLE=&3
+define i2b2_etl_schema=&3
+define MED_TABLE=&4
 ;
 /*
 1. take act meds
@@ -81,7 +82,7 @@ with clarity_med_id_to_rxcui as (
   ,sh.c_basecode) --coment this line out to find out which have been not mapped.
   c_basecode_final_mapping
   from NCATS_MEDS_RXCUI sh
-  left JOIN BLUEHERONMETADATA.heron_terms he
+  left JOIN "&&metadata_schema".heron_terms he
     on sh.c_basecode_rxcui=he.c_basecode
   left JOIN clarity_med_id_to_rxcui medid_to_rxcui
     on sh.c_basecode_rxcui= 'RXCUI:' ||medid_to_rxcui.rxcui
@@ -93,7 +94,7 @@ with clarity_med_id_to_rxcui as (
   he.c_name heron_c_name
   from med_mapping sh
   left
-  join BLUEHERONMETADATA.HERON_TERMS he
+  join "&&metadata_schema".HERON_TERMS he
     on sh.c_basecode_final_mapping = he.c_basecode
 )
 select 
@@ -214,9 +215,9 @@ union all
 --- blueheronmetadata."MED_TABLE"
 -------------------------------------------------------------------------------
 whenever sqlerror continue;
-drop table blueheronmetadata."&&MED_TABLE";
+drop table "&&metadata_schema"."&&MED_TABLE";
 whenever sqlerror exit sql.sqlcode;
-create table blueheronmetadata."&&MED_TABLE"
+create table "&&metadata_schema"."&&MED_TABLE"
 as
 select * from TEMP_NCATS_MEDS_HERON2;
 
@@ -244,9 +245,39 @@ insert into nightherondata.concept_dimension (
         sysdate,
         'ACT.&&MED_TABLE'
     from
-        blueheronmetadata."&&MED_TABLE"
+        "&&metadata_schema"."&&MED_TABLE"
     where
         c_basecode is not null
 ;
 
 commit;
+
+
+/** Build medication metadata table indexes.
+
+See diagnosis_mapping.sql for act_ix_code_gen
+
+select sql from act_ix_code_gen where c_table_name like '%_MED%';
+
+*/
+alter session set current_schema=&&metadata_schema;
+
+whenever sqlerror continue;
+drop index act_med_alpha_2018_c_fullname;
+drop index act_med_alpha_2018_c_hlevel;
+drop index act_med_alpha_2018_m_applied_p;
+drop index act_med_alpha_2018_m_exclusion;
+drop index act_med_va_2018_c_fullname;
+drop index act_med_va_2018_c_hlevel;
+drop index act_med_va_2018_m_applied_path;
+drop index act_med_va_2018_m_exclusion_cd;
+whenever sqlerror exit sql.sqlcode;
+
+create unique index act_med_alpha_2018_c_fullname on act_med_alpha_v2_121318(c_fullname) parallel 4;
+create  index act_med_alpha_2018_c_hlevel on act_med_alpha_v2_121318(c_hlevel) parallel 4;
+create  index act_med_alpha_2018_m_applied_p on act_med_alpha_v2_121318(m_applied_path) parallel 4;
+create  index act_med_alpha_2018_m_exclusion on act_med_alpha_v2_121318(m_exclusion_cd) parallel 4;
+create unique index act_med_va_2018_c_fullname on act_med_va_v2_092818(c_fullname) parallel 4;
+create  index act_med_va_2018_c_hlevel on act_med_va_v2_092818(c_hlevel) parallel 4;
+create  index act_med_va_2018_m_applied_path on act_med_va_v2_092818(m_applied_path) parallel 4;
+create  index act_med_va_2018_m_exclusion_cd on act_med_va_v2_092818(m_exclusion_cd) parallel 4;
