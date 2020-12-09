@@ -9,7 +9,8 @@ act_shrine_ontology_mapping: status/table_access
 
 
 status/table_access: status/demographics status/visit_details \
-		status/diagnosis status/labs status/procedures
+		status/diagnosis status/labs status/procedures \
+		status/covid
 	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
 
@@ -55,6 +56,12 @@ status/procedures:
 	sql $(ACCOUNT) @procedure_ont_map.sql $(metadata_schema)
 	mkdir -p status
 	touch $@
+
+status/covid:
+	sql $(ACCOUNT) @covid_mapping.sql $(metadata_schema) $(shrine_ont_schema)
+	mkdir -p status
+	touch $@
+
 
 clean:
 	rm -rf status
