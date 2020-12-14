@@ -53,12 +53,12 @@ insert /*+  APPEND */ into "&&metadata_schema".act_covid
         || 'kuh_dx_id_'
         || map10.dx_id
         || '\' c_tooltip,
-        m_applied_path,
         update_date,
         download_date,
         import_date,
         'ACT_ETL' sourcesystem_cd,
         valuetype_cd,
+        m_applied_path,
         m_exclusion_cd,
         c_path,
         c_symbol
@@ -154,12 +154,12 @@ INSERT INTO "&&metadata_schema".act_covid
         || 'kuh_dx_id_'
         || map10.dx_id
         || '\' c_tooltip,
-        m_applied_path,
         update_date,
         download_date,
         import_date,
         'ACT' sourcesystem_cd,
         valuetype_cd,
+        m_applied_path,
         m_exclusion_cd,
         c_path,
         c_symbol
