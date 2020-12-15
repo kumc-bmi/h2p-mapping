@@ -10,7 +10,7 @@ act_shrine_ontology_mapping: status/table_access
 
 status/table_access: status/demographics status/visit_details \
 		status/diagnosis status/labs status/procedures \
-		status/covid
+		status/covid status/medications
 	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
 
