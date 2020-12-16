@@ -17,54 +17,60 @@ create table "&&metadata_schema".ACT_COVID  nologging as select * from "&&shrine
 ---------------- subtree      : mapping apply to sub  tree of ACT Phenotype\COVID-19 Related Terms\Diagnosis
 -------------------------------------------------------------------------------
 insert /*+  APPEND */ into "&&metadata_schema".act_covid
-with icd10_dx_id_map
-as
-(
-SELECT
-map10.code icd10,
-map10.dx_id,
-edg.dx_name
-
-FROM
-clarity.edg_current_icd10 map10
-JOIN clarity.clarity_edg edg ON map10.dx_id = edg.dx_id
-)
-select
+    with icd10_dx_id_map as (
+        select
+            map10.code icd10,
+            map10.dx_id,
+            edg.dx_name
+        from
+            clarity.edg_current_icd10   map10
+            join clarity.clarity_edg         edg on map10.dx_id = edg.dx_id
+    )
+    select
 --map10.*,
-C_HLEVEL +1 C_HLEVEL,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_FULLNAME ,
-map10.dx_name c_name ,
-C_SYNONYM_CD ,
-C_VISUALATTRIBUTES ,
-C_TOTALNUM ,
-'KUH|DX_ID:' || map10.dx_id C_BASECODE ,
-C_METADATAXML ,
-C_FACTTABLECOLUMN ,
-C_TABLENAME ,
-C_COLUMNNAME ,
-C_COLUMNDATATYPE ,
-C_OPERATOR ,
-C_FULLNAME ||'kuh_dx_id_' || map10.dx_id || '\' C_DIMCODE ,
-C_COMMENT ,
-C_TOOLTIP ||'kuh_dx_id_' || map10.dx_id || '\' C_TOOLTIP,
-M_APPLIED_PATH ,
-UPDATE_DATE ,
-DOWNLOAD_DATE ,
-IMPORT_DATE ,
-'ACT_ETL'SOURCESYSTEM_CD ,
-VALUETYPE_CD ,
-M_EXCLUSION_CD ,
-C_PATH ,
-C_SYMBOL
-from "&&metadata_schema".act_covid meta
-join icd10_dx_id_map map10
-on 'ICD10CM:'||map10.icd10 = meta.c_basecode
-where c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
+        c_hlevel + 1 c_hlevel,
+        c_fullname
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_fullname,
+        map10.dx_name c_name,
+        c_synonym_cd,
+        c_visualattributes,
+        c_totalnum,
+        'KUH|DX_ID:' || map10.dx_id c_basecode,
+        c_metadataxml,
+        c_facttablecolumn,
+        c_tablename,
+        c_columnname,
+        c_columndatatype,
+        c_operator,
+        c_fullname
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_dimcode,
+        c_comment,
+        c_tooltip
+        || 'kuh_dx_id_'
+        || map10.dx_id
+        || '\' c_tooltip,
+        update_date,
+        download_date,
+        import_date,
+        'ACT_ETL' sourcesystem_cd,
+        valuetype_cd,
+        m_applied_path,
+        m_exclusion_cd,
+        c_path,
+        c_symbol
+    from
+        "&&metadata_schema".act_covid   meta
+        join icd10_dx_id_map                 map10 on 'ICD10CM:' || map10.icd10 = meta.c_basecode
+    where
+        c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
 -- 729 rows inserted.
-;
-commit
-;
+        ;
 
+commit;
 
 /** COVID Prodcedures: replace CPT4 with CPT
  1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
@@ -148,12 +154,12 @@ INSERT INTO "&&metadata_schema".act_covid
         || 'kuh_dx_id_'
         || map10.dx_id
         || '\' c_tooltip,
-        m_applied_path,
         update_date,
         download_date,
         import_date,
         'ACT' sourcesystem_cd,
         valuetype_cd,
+        m_applied_path,
         m_exclusion_cd,
         c_path,
         c_symbol
