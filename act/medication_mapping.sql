@@ -1,19 +1,10 @@
 set echo on
 ;
-define i2b2_etl_schema=&1;
+define metadata_schema=&1
 define SHRINE_ONT_SCHEMA=&2
-define MED_TABLE=&3
-define nB2=&4
+define i2b2_etl_schema=&3
+define MED_TABLE=&4
 ;
-/*
-TODO:
-1. fix @nb2 to id
-
-variables: 
-"&&i2b2_etl_schema"
-"&&nB2"
-
-*/
 /*
 1. take act meds
 2. add column c_basecode_rxcui
@@ -25,15 +16,7 @@ variables:
 8. map rest of rxcui(which are not mapped to heron using c_basecode_rxcui_mapped ) to med_id  (and save in c_basecode_rxcui_medid)
 9. create mapping file first preference c_basecode_rxcui and second preference c_basecode_rxcui_medid
 */
--------------------------------------------------------------------------------
---- create id db link
--------------------------------------------------------------------------------
-whenever sqlerror continue;
-drop public database link nB2;
-whenever sqlerror exit sql.sqlcode;
-CREATE public DATABASE LINK nB2 
-   USING '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=8521)))(CONNECT_DATA=(SERVICE_NAME=nheronB2)))'
-; 
+
 -------------------------------------------------------------------------------
 --- tmp_med_mapping
 -------------------------------------------------------------------------------
@@ -49,7 +32,7 @@ as
 with clarity_med_id_to_rxcui as (
   --clarity_medication_id, rxcui, dose_pref
   select 'KUH|MEDICATION_ID:' || cmed.medication_id clarity_med_id, rxn.rxnorm_code rxcui, '1) Clarity'  dose_pref
-  from clarity.rxnorm_codes@&&nB2 rxn
+  from clarity.rxnorm_codes rxn
   join clarity.clarity_medication@id cmed on cmed.medication_id = rxn.medication_id
   union all
   select 'KUH|MEDICATION_ID:' || clarity_med_id, rxcui, '2) GCN'
@@ -60,14 +43,14 @@ with clarity_med_id_to_rxcui as (
   union all
   select  'KUH|MEDICATION_ID:' || to_number(clarity_medication_id), rxcui, '4) Manual Curation' --, con.tty, va_name, sdf_name
   from "&&i2b2_etl_schema".med_map_manual_curation mmmc
-  join rxnorm.rxnconso@&&nB2 con on con.rxaui = mmmc.sdf_rxaui
+  join rxnorm.rxnconso con on con.rxaui = mmmc.sdf_rxaui
 )
 ,nui_to_rxcui  as
   (
   select
     'NUI:' || CODE CODE,
     'RXCUI:' || RXCUI RXCUI
-  from rxnorm.rxnconso@&&nb2
+  from rxnorm.rxnconso
     where code like 'N%'
       and code not in ('NOCODE')
   group by rxcui,code
@@ -99,7 +82,7 @@ with clarity_med_id_to_rxcui as (
   ,sh.c_basecode) --coment this line out to find out which have been not mapped.
   c_basecode_final_mapping
   from NCATS_MEDS_RXCUI sh
-  left JOIN BLUEHERONMETADATA.heron_terms he
+  left JOIN "&&metadata_schema".heron_terms he
     on sh.c_basecode_rxcui=he.c_basecode
   left JOIN clarity_med_id_to_rxcui medid_to_rxcui
     on sh.c_basecode_rxcui= 'RXCUI:' ||medid_to_rxcui.rxcui
@@ -111,7 +94,7 @@ with clarity_med_id_to_rxcui as (
   he.c_name heron_c_name
   from med_mapping sh
   left
-  join BLUEHERONMETADATA.HERON_TERMS he
+  join "&&metadata_schema".HERON_TERMS he
     on sh.c_basecode_final_mapping = he.c_basecode
 )
 select 
@@ -232,8 +215,39 @@ union all
 --- blueheronmetadata."MED_TABLE"
 -------------------------------------------------------------------------------
 whenever sqlerror continue;
-drop table blueheronmetadata."&&MED_TABLE";
+drop table "&&metadata_schema"."&&MED_TABLE";
 whenever sqlerror exit sql.sqlcode;
-create table blueheronmetadata."&&MED_TABLE"
+create table "&&metadata_schema"."&&MED_TABLE"
 as
 select * from TEMP_NCATS_MEDS_HERON2;
+
+
+-- activate concepts
+delete from nightherondata.concept_dimension
+where
+    sourcesystem_cd = 'ACT.&&MED_TABLE';
+
+insert into nightherondata.concept_dimension (
+    concept_cd,
+    concept_path,
+    name_char,
+    update_date,
+    download_date,
+    import_date,
+    sourcesystem_cd
+)
+    select
+        c_basecode,
+        c_fullname,
+        c_name,
+        update_date,
+        download_date,
+        sysdate,
+        'ACT.&&MED_TABLE'
+    from
+        "&&metadata_schema"."&&MED_TABLE"
+    where
+        c_basecode is not null
+;
+
+commit;
