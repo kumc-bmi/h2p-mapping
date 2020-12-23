@@ -10,9 +10,9 @@ whenever sqlerror exit sql.sqlcode;
 
 create table "&&metadata_schema".NCATS_VISIT_DETAILS  nologging as select * from "&&shrine_ont_schema".NCATS_VISIT_DETAILS ;
 
-delete from nightherondata.concept_dimension
+delete from "&&heron_data_schema".concept_dimension
 where concept_path like '\ACT\Visit Details\%';
-insert /*+ APPEND */ into nightherondata.concept_dimension(
+insert /*+ APPEND */ into "&&heron_data_schema".concept_dimension(
   concept_cd,
   concept_path,
   name_char,
