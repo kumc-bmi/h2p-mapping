@@ -44,6 +44,7 @@ pcori_path,local_path
 \PCORI\ENCOUNTER\ENC_TYPE\OT\,\i2b2\Visit Details\ENC_TYPE\OT\
 \PCORI\ENCOUNTER\ENC_TYPE\UN\,\i2b2\Visit Details\ENC_TYPE\UN\
 \PCORI\ENCOUNTER\ENC_TYPE\OS\,\i2b2\Visit Details\ENC_TYPE\OS\
+\PCORI\ENCOUNTER\ENC_TYPE\TH\,\i2b2\Visit Details\ENC_TYPE\TH\
 \PCORI\ENCOUNTER\ENC_TYPE\IP\,\i2b2\UHC\Visit Details\Length of Stay\Hospital\
 \PCORI\DEMOGRAPHIC\SEX\F\,\i2b2\Demographics\Gender\Female\
 \PCORI\DEMOGRAPHIC\SEX\M\,\i2b2\Demographics\Gender\Male\
