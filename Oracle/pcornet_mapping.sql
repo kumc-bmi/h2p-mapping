@@ -706,7 +706,9 @@ whenever sqlerror continue;
 whenever sqlerror exit;
 
 commit;		
-create table pcornet_lab_loinc as 
+create table pcornet_lab_loinc 
+nologging parallel
+as 
 with parent_loinc_codes as ( -- LOINC codes with children LOINC codes
   select p_loinc.*
   from "&&i2b2_meta_schema"."&&terms_table" p_loinc
