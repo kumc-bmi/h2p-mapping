@@ -10,68 +10,6 @@ whenever sqlerror exit sql.sqlcode
 ;
 create table "&&metadata_schema".ACT_COVID  nologging as select * from "&&shrine_ont_schema".ACT_COVID ;
 
-------------------------------------------------------------------------------
----------------- C_NAME       : ACT COVID-19
----------------- C_TABLE_NAME : ACT_COVID
----------------- C_TABLE_CD   : ACT_COVID_V1
----------------- subtree      : mapping apply to sub  tree of ACT Phenotype\COVID-19 Related Terms\Diagnosis
--------------------------------------------------------------------------------
-insert /*+  APPEND */ into "&&metadata_schema".act_covid
-    with icd10_dx_id_map as (
-        select
-            map10.code icd10,
-            map10.dx_id,
-            edg.dx_name
-        from
-            clarity.edg_current_icd10   map10
-            join clarity.clarity_edg         edg on map10.dx_id = edg.dx_id
-    )
-    select
---map10.*,
-        c_hlevel + 1 c_hlevel,
-        c_fullname
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_fullname,
-        map10.dx_name c_name,
-        c_synonym_cd,
-        c_visualattributes,
-        c_totalnum,
-        'KUH|DX_ID:' || map10.dx_id c_basecode,
-        c_metadataxml,
-        c_facttablecolumn,
-        c_tablename,
-        c_columnname,
-        c_columndatatype,
-        c_operator,
-        c_fullname
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_dimcode,
-        c_comment,
-        c_tooltip
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_tooltip,
-        update_date,
-        download_date,
-        import_date,
-        'ACT_ETL' sourcesystem_cd,
-        valuetype_cd,
-        m_applied_path,
-        m_exclusion_cd,
-        c_path,
-        c_symbol
-    from
-        "&&metadata_schema".act_covid   meta
-        join icd10_dx_id_map                 map10 on 'ICD10CM:' || map10.icd10 = meta.c_basecode
-    where
-        c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
--- 729 rows inserted.
-        ;
-
-commit;
-
 /** COVID Prodcedures: replace CPT4 with CPT
  1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
 */
