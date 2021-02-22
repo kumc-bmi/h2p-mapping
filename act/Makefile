@@ -37,7 +37,7 @@ status/demographics: status/meta_manual_mapping
 	touch $@
 
 status/demographics_post:
-	sql $(ACCOUNT) @demographics_mapping_post.sql $(metadata_schema) $(shrine_ont_schema)
+	sql $(ACCOUNT) @demographics_mapping_post.sql $(metadata_schema) $(shrine_ont_schema) $(heron_data_schema)
 	mkdir -p status
 	touch $@
 
@@ -56,7 +56,7 @@ status/diagnosis:
 	touch $@
 
 status/diagnosis_post:
-	sql $(ACCOUNT) @diagnosis_mapping_post.sql $(metadata_schema) $(shrine_ont_schema)
+	sql $(ACCOUNT) @diagnosis_mapping_post.sql $(metadata_schema) $(shrine_ont_schema) $(heron_data_schema)
 	mkdir -p status
 	touch $@
 
@@ -89,7 +89,7 @@ status/procedures:
 	touch $@
 
 status/procedures_post:
-	sql $(ACCOUNT) @procedure_ont_map_post.sql $(metadata_schema)
+	sql $(ACCOUNT) @procedure_ont_map_post.sql $(metadata_schema) $(heron_data_schema)
 	mkdir -p status
 	touch $@
 
@@ -99,7 +99,7 @@ status/covid:
 	touch $@
 
 status/covid_post:
-	sql $(ACCOUNT) @covid_mapping_post.sql $(metadata_schema) $(shrine_ont_schema)
+	sql $(ACCOUNT) @covid_mapping_post.sql $(metadata_schema) $(shrine_ont_schema) $(heron_data_schema)
 	mkdir -p status
 	touch $@
 
