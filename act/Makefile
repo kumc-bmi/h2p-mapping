@@ -66,7 +66,7 @@ status/labs:
 	touch $@
 
 status/labs_post:
-	sql $(ACCOUNT) @labs_mapping_post.sql $(metadata_schema) $(shrine_ont_schema) $(etl_schema)
+	sql $(ACCOUNT) @labs_mapping_post.sql $(metadata_schema) $(heron_data_schema)
 	mkdir -p status
 	touch $@
 
