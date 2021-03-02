@@ -79,7 +79,7 @@ status/medications:
 	touch $@
 
 status/medications_post:
-	sql $(ACCOUNT) @medication_post.sql $(metadata_schema)
+	sql $(ACCOUNT) @medication_mapping_post.sql $(metadata_schema)
 	mkdir -p status
 	touch $@
 
