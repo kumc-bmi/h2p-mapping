@@ -1,3 +1,5 @@
+whenever sqlerror exit sql.sqlcode;
+
 define metadata_schema=&1
 define data_schema=&2
 define MED_TABLE=&3
