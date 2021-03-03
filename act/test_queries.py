@@ -114,6 +114,10 @@ def find_flagged_queries(driver, sleep):
     # sort by flags
     by_css('.SortHeader .fa-flag').click()
 
+    # wait until list is done loading or we'll only find flags on first page
+    WebDriverWait(driver, 10).until(EC.invisibility_of_element_located(
+        (By.ID, "Loader")))
+
     flagged_query_list = driver.find_elements_by_xpath(
         "//i[@class='fa fa-flag hover-controls flagged']")
 
