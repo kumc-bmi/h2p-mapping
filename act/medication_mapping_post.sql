@@ -1,4 +1,38 @@
+whenever sqlerror exit sql.sqlcode;
+
 define metadata_schema=&1
+define data_schema=&2
+define MED_TABLE=&3
+
+-- activate concepts
+delete from "&&data_schema".concept_dimension
+where
+    sourcesystem_cd = 'ACT.&&MED_TABLE';
+
+insert into "&&data_schema".concept_dimension (
+    concept_cd,
+    concept_path,
+    name_char,
+    update_date,
+    download_date,
+    import_date,
+    sourcesystem_cd
+)
+    select
+        c_basecode,
+        c_fullname,
+        c_name,
+        update_date,
+        download_date,
+        sysdate,
+        'ACT.&&MED_TABLE'
+    from
+        "&&metadata_schema"."&&MED_TABLE"
+    where
+        c_basecode is not null
+;
+
+commit;
 
 alter session set current_schema=&&metadata_schema;
 

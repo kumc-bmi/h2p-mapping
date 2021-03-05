@@ -220,34 +220,3 @@ whenever sqlerror exit sql.sqlcode;
 create table "&&metadata_schema"."&&MED_TABLE"
 as
 select * from TEMP_NCATS_MEDS_HERON2;
-
-
--- activate concepts
-delete from nightherondata.concept_dimension
-where
-    sourcesystem_cd = 'ACT.&&MED_TABLE';
-
-insert into nightherondata.concept_dimension (
-    concept_cd,
-    concept_path,
-    name_char,
-    update_date,
-    download_date,
-    import_date,
-    sourcesystem_cd
-)
-    select
-        c_basecode,
-        c_fullname,
-        c_name,
-        update_date,
-        download_date,
-        sysdate,
-        'ACT.&&MED_TABLE'
-    from
-        "&&metadata_schema"."&&MED_TABLE"
-    where
-        c_basecode is not null
-;
-
-commit;

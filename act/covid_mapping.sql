@@ -10,68 +10,6 @@ whenever sqlerror exit sql.sqlcode
 ;
 create table "&&metadata_schema".ACT_COVID  nologging as select * from "&&shrine_ont_schema".ACT_COVID ;
 
-------------------------------------------------------------------------------
----------------- C_NAME       : ACT COVID-19
----------------- C_TABLE_NAME : ACT_COVID
----------------- C_TABLE_CD   : ACT_COVID_V1
----------------- subtree      : mapping apply to sub  tree of ACT Phenotype\COVID-19 Related Terms\Diagnosis
--------------------------------------------------------------------------------
-insert /*+  APPEND */ into "&&metadata_schema".act_covid
-    with icd10_dx_id_map as (
-        select
-            map10.code icd10,
-            map10.dx_id,
-            edg.dx_name
-        from
-            clarity.edg_current_icd10   map10
-            join clarity.clarity_edg         edg on map10.dx_id = edg.dx_id
-    )
-    select
---map10.*,
-        c_hlevel + 1 c_hlevel,
-        c_fullname
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_fullname,
-        map10.dx_name c_name,
-        c_synonym_cd,
-        c_visualattributes,
-        c_totalnum,
-        'KUH|DX_ID:' || map10.dx_id c_basecode,
-        c_metadataxml,
-        c_facttablecolumn,
-        c_tablename,
-        c_columnname,
-        c_columndatatype,
-        c_operator,
-        c_fullname
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_dimcode,
-        c_comment,
-        c_tooltip
-        || 'kuh_dx_id_'
-        || map10.dx_id
-        || '\' c_tooltip,
-        update_date,
-        download_date,
-        import_date,
-        'ACT_ETL' sourcesystem_cd,
-        valuetype_cd,
-        m_applied_path,
-        m_exclusion_cd,
-        c_path,
-        c_symbol
-    from
-        "&&metadata_schema".act_covid   meta
-        join icd10_dx_id_map                 map10 on 'ICD10CM:' || map10.icd10 = meta.c_basecode
-    where
-        c_fullname like '\ACT\UMLS_C0031437\SNOMED_3947185011\UMLS_C0037088\%'
--- 729 rows inserted.
-        ;
-
-commit;
-
 /** COVID Prodcedures: replace CPT4 with CPT
  1. only 1 cpt in in act covid, and heron has 1 and that' patient count is 0
 */
@@ -154,12 +92,12 @@ INSERT INTO "&&metadata_schema".act_covid
         || 'kuh_dx_id_'
         || map10.dx_id
         || '\' c_tooltip,
+        m_applied_path,
         update_date,
         download_date,
         import_date,
         'ACT' sourcesystem_cd,
         valuetype_cd,
-        m_applied_path,
         m_exclusion_cd,
         c_path,
         c_symbol
@@ -326,48 +264,3 @@ insert into "&&metadata_schema".act_covid (
     SYSDATE,
     'ACT'
 );
-
-
-/** fill in concept dimension */
-delete from nightherondata.concept_dimension
-where concept_path like '\ACT\UMLS_C0031437\SNOMED_3947185011\%';
-
-insert /*+ APPEND */ into nightherondata.concept_dimension(
-  concept_cd,
-  concept_path,
-  name_char,
-  update_date,
-  download_date,
-  import_date,
-  sourcesystem_cd
-  )
-select distinct
-  ib.c_basecode,
-  ib.c_fullname,
-  ib.c_name,
-  update_date,
-  download_date,
-  sysdate,
-  'ACT'
-from (
- select * from "&&metadata_schema".ACT_COVID
-) ib
-where ib.c_basecode is not null
-;
-
-/** Build COVID metadata table indexes. */
--- See diagnosis_mapping.sql for act_ix_code_gen
--- select sql from act_ix_code_gen where c_table_name like '%_COVID';
-alter session set current_schema=&&metadata_schema;
-
-whenever sqlerror continue;
-drop index act_covid_v1_c_fullname;
-drop index act_covid_v1_c_hlevel;
-drop index act_covid_v1_m_applied_path;
-drop index act_covid_v1_m_exclusion_cd;
-whenever sqlerror exit sql.sqlcode;
-
-create unique index act_covid_v1_c_fullname on act_covid(c_fullname) parallel 4;
-create  index act_covid_v1_c_hlevel on act_covid(c_hlevel) parallel 4;
-create  index act_covid_v1_m_applied_path on act_covid(m_applied_path) parallel 4;
-create  index act_covid_v1_m_exclusion_cd on act_covid(m_exclusion_cd) parallel 4;
