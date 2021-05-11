@@ -13,9 +13,11 @@ status/mapping: status/demographics status/visit_details \
 # targets ending in `_post` deal with concept/visit/patient dimensions,
 #   indexes, table_access - had to be able to run on different computer.
 
-status/table_access: status/demographics_post status/visit_details_post \
+status/concepts_merge: status/demographics_post status/visit_details_post \
 		status/diagnosis_post status/labs_post status/procedures_post \
 		status/covid_post status/medications_post
+
+status/table_access: status/concepts_merge
 	sql $(ACCOUNT) @update_table_access.sql $(metadata_schema)
 	touch $@
 
